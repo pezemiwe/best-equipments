@@ -1,0 +1,14 @@
+# Netlify deployment configuration for the Best Equipments store.
+# The @netlify/plugin-nextjs runtime handles SSR pages and API routes.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Some legacy peer dependencies in this project need this flag to install
+  NPM_FLAGS = "--legacy-peer-deps"
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

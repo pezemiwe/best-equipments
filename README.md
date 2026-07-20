@@ -24,10 +24,10 @@ Copy `.env.local.example` to `.env.local`:
 | `ADMIN_SECRET` | Secret for signing admin session tokens (**required in production**) |
 | `NEXT_PUBLIC_SITE_URL` | Public site URL used for SEO tags and the sitemap (e.g. `https://bestqualities.ng`) |
 
-## Deploying to Vercel
+## Deploying to Netlify
 
 1. Push this repository to GitHub.
-2. Import it at [vercel.com/new](https://vercel.com/new).
+2. Import it at [app.netlify.com/start](https://app.netlify.com/start). Build settings come from netlify.toml.
 3. Add the four environment variables above.
 4. Deploy. The first request creates and seeds the database.
 
