@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#f1f2f4"/>
+  <g fill="none" stroke="#c3c7cc" stroke-width="10" stroke-linecap="round">
+    <circle cx="200" cy="185" r="70"/>
+    <circle cx="200" cy="185" r="26"/>
+    <path d="M200 95v-24M200 299v-24M110 185H86M314 185h-24M137 122l-17-17M280 265l-17-17M263 122l17-17M120 265l17-17"/>
+  </g>
+  <text x="200" y="330" font-family="Arial, sans-serif" font-size="18" fill="#9aa0a6" text-anchor="middle">Image coming soon</text>
+</svg>

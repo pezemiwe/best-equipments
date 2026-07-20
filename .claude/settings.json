@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx next *)",
+      "Bash(curl -s http://localhost:3057/api/products)",
+      "Bash(curl -s http://localhost:3057/)",
+      "Bash(curl -s http://localhost:3057/store)",
+      "Bash(node scripts/seedProducts.js)",
+      "Bash(node -e \"const i=require\\('@chakra-ui/icons'\\); console.log\\('LockIcon:', typeof i.LockIcon, 'ViewIcon:', typeof i.ViewIcon, 'ViewOffIcon:', typeof i.ViewOffIcon\\); const c=require\\('@chakra-ui/react'\\); console.log\\('InputRightElement:', typeof c.InputRightElement, 'InputGroup:', typeof c.InputGroup\\)\")",
+      "Bash(node -e \"console.log\\(require\\('@chakra-ui/icons/package.json'\\).version, require\\('@chakra-ui/react/package.json'\\).version\\)\")",
+      "Bash(cd \"c:/Users/DELL/Desktop/maise/src\" && sed -i \"s/#d90429/#f68b1e/g\" components/home.tsx components/navbar.tsx components/footer.tsx components/shoppingDrawer.tsx pages/store/index.tsx pages/store/[id].tsx pages/about/index.tsx pages/contact/index.tsx pages/admin/index.tsx && grep -rn \"d90429\" . | wc -l)",
+      "PowerShell($conn = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if \\($conn\\) { $procId = $conn[0].OwningProcess; $proc = Get-Process -Id $procId; Write-Output \"Killing: $\\($proc.ProcessName\\) \\(PID $procId\\)\"; Stop-Process -Id $procId -Force; Start-Sleep -Seconds 2 } else { Write-Output \"Nothing listening on port 3000\" })",
+      "PowerShell($locks = Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue | Where-Object { \\(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue\\).ProcessName -eq 'node' } | Select-Object LocalPort, OwningProcess -Unique; if \\($locks\\) { $locks | ForEach-Object { Write-Output \"node PID $\\($_.OwningProcess\\) on port $\\($_.LocalPort\\)\" } } else { Write-Output \"No node servers listening\" })",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"ProcessId=17524 OR ProcessId=6908 OR ProcessId=84056\" | Select-Object ProcessId, @{N='Cmd';E={$_.CommandLine.Substring\\(0, [Math]::Min\\(150, $_.CommandLine.Length\\)\\)}} | Format-List)",
+      "Bash(python -)",
+      "Bash(sed -i \"s/MAP-/TBE-/g\" src/server/productStore.ts)",
+      "Bash(curl -s --max-time 30 \"http://localhost:3000/api/products\")",
+      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(len\\(d\\),'products'\\); print\\([p['name']+' N'+str\\(p['amount']\\) for p in d[:3]]\\)\")",
+      "Bash(cd \"c:/Users/DELL/Desktop/maise/src\" && sed -i \"s/#f68b1e/#2563eb/g; s/#1a1d21/#0f172a/g; s/colorScheme='orange'/colorScheme='blue'/g\" components/home.tsx components/navbar.tsx components/footer.tsx components/shoppingDrawer.tsx components/ProductTile.tsx pages/store/index.tsx \"pages/store/[id].tsx\" pages/about/index.tsx pages/contact/index.tsx pages/admin/index.tsx && grep -rn \"f68b1e\" . | wc -l && cd .. && npx tsc --noEmit && echo CLEAN)",
+      "Read(//c/Users/DELL/Desktop/**)",
+      "Bash(git config *)",
+      "Bash(git rm *)",
+      "Bash(npm install *)",
+      "Bash(node -e \"console.log\\(require\\('@neondatabase/serverless/package.json'\\).version\\)\")",
+      "Bash(node -e \"const {neon}=require\\('@neondatabase/serverless'\\); console.log\\('neon driver ok:', typeof neon\\)\")",
+      "Bash(npm uninstall *)",
+      "PowerShell($conn = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if \\($conn\\) { Stop-Process -Id $conn[0].OwningProcess -Force; Start-Sleep 2 }; Remove-Item -Recurse -Force \"c:\\\\Users\\\\DELL\\\\Desktop\\\\maise\\\\.next\" -ErrorAction SilentlyContinue; Write-Output \"restarted-clean\")",
+      "Bash(curl -s -o /dev/null -w \"home: %{http_code}\\\\n\" --max-time 90 http://localhost:3000/)",
+      "Bash(curl -s http://localhost:3000/store/seed-1)",
+      "Bash(python -c ' *)",
+      "Bash(git add *)",
+      "Bash(git commit -q -m 'Rebuild as Best Equipments vehicle parts store *)",
+      "Bash(git checkout *)",
+      "Bash(git commit -q -m 'Best Equipments - vehicle parts ecommerce *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\DELL\\Desktop\\maise\\pages\\store"
+    ]
+  }
+}

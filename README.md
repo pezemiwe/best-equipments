@@ -1,0 +1,34 @@
+# Best Equipments
+
+Online store for **Best Qualities Industrial Equipment Nig Ltd** — genuine vehicle parts and accessories with WhatsApp ordering, an admin portal, and naira pricing.
+
+Built with Next.js (pages router), Chakra UI, React Query, and Neon Postgres (falls back to a local JSON store in development).
+
+## Getting started
+
+```bash
+yarn install
+yarn dev
+```
+
+Open [http://localhost:3000](http://localhost:3000). The admin portal is at `/admin` (default dev password: `maise-admin` — override with `ADMIN_PASSWORD`).
+
+## Environment variables
+
+Copy `.env.local.example` to `.env.local`:
+
+| Variable | Purpose |
+|---|---|
+| `DATABASE_URL` | Neon Postgres connection string. Unset = local JSON file store (dev only). Tables are created and seeded automatically. |
+| `ADMIN_PASSWORD` | Admin portal password (**required in production**) |
+| `ADMIN_SECRET` | Secret for signing admin session tokens (**required in production**) |
+| `NEXT_PUBLIC_SITE_URL` | Public site URL used for SEO tags and the sitemap (e.g. `https://bestqualities.ng`) |
+
+## Deploying to Vercel
+
+1. Push this repository to GitHub.
+2. Import it at [vercel.com/new](https://vercel.com/new).
+3. Add the four environment variables above.
+4. Deploy. The first request creates and seeds the database.
+
+After launch: submit `/sitemap.xml` in Google Search Console and replace the demo catalog via the admin portal.
