@@ -40,22 +40,22 @@ const DARK = "#0f172a";
 export const Home = () => {
   const categories = [
     {
-      src: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=656&h=830&q=70",
-      alt: "engine parts",
-      type: "ENGINE PARTS",
-      href: "/store?category=engine",
+      src: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&w=656&h=830&q=70",
+      alt: "belts and chains",
+      type: "BELTS & CHAINS",
+      href: "/store?category=belts",
     },
     {
-      src: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=656&h=830&q=70",
-      alt: "brakes and suspension",
-      type: "BRAKES & SUSPENSION",
-      href: "/store?category=brakes",
+      src: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=656&h=830&q=70",
+      alt: "bearings and power transmission",
+      type: "BEARINGS & TRANSMISSION",
+      href: "/store?category=bearings",
     },
     {
-      src: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=656&h=830&q=70",
-      alt: "accessories and tools",
-      type: "ACCESSORIES",
-      href: "/store?category=accessories",
+      src: "https://images.unsplash.com/photo-1504328345606-18aa54129790?auto=format&fit=crop&w=656&h=830&q=70",
+      alt: "excavator and drilling parts",
+      type: "EXCAVATOR & DRILLING",
+      href: "/store?category=excavatorDrilling",
     },
   ];
 
@@ -63,7 +63,7 @@ export const Home = () => {
     {
       icon: FaShieldAlt,
       title: "Genuine Parts",
-      text: "OEM and certified aftermarket parts from trusted brands only.",
+      text: "Trusted brands and quality-checked stock, sourced right.",
     },
     {
       icon: FaShippingFast,
@@ -72,13 +72,13 @@ export const Home = () => {
     },
     {
       icon: FaTools,
-      title: "Guaranteed Fitment",
-      text: "Every part checked against your vehicle before it ships.",
+      title: "Wide Range",
+      text: "From conveyor belts to excavator parts, all under one roof.",
     },
     {
       icon: FaHeadset,
       title: "Expert Support",
-      text: "Talk to real mechanics, not call scripts, 6 days a week.",
+      text: "Talk to real technicians, not call scripts, 6 days a week.",
     },
   ];
 
@@ -129,7 +129,7 @@ export const Home = () => {
               fontWeight="bold"
               mb="16px"
             >
-              QUALITY VEHICLE PARTS & ACCESSORIES
+              INDUSTRIAL EQUIPMENT & VEHICLE PARTS
             </Text>
             <Text
               fontSize={{ base: "36px", lg: "56px" }}
@@ -139,16 +139,16 @@ export const Home = () => {
               textTransform="uppercase"
               maxW={{ base: "100%", lg: "640px" }}
             >
-              The right part, for the right vehicle, every time
+              The right part, for the right machine, every time
             </Text>
             <Text
               mb={{ base: "25px", lg: "45px" }}
               maxW={{ base: "100%", lg: "501px" }}
               color="#e8e8e8"
             >
-              From brake pads to complete engine kits, we stock thousands of
-              genuine and OEM-quality parts, backed by guaranteed fitment and
-              fast nationwide delivery.
+              From conveyor belts and bearings to excavator parts and car
+              care products, we stock thousands of quality industrial
+              supplies, backed by expert advice and fast nationwide delivery.
             </Text>
             <Flex gap="16px" flexWrap="wrap">
               <Link href="/store">
@@ -162,7 +162,7 @@ export const Home = () => {
                   fontWeight="bold"
                   _hover={{ opacity: 0.85 }}
                 >
-                  SHOP PARTS
+                  SHOP NOW
                 </Button>
               </Link>
               <Link href="/contact">
@@ -322,8 +322,8 @@ export const Home = () => {
                 color="#5a5a5a"
                 width={{ base: "100%", lg: "537px" }}
               >
-                From routine maintenance to full rebuilds, find parts for every
-                system of your vehicle, all in one place.
+                From power transmission to heavy equipment parts, find what
+                keeps your machines and vehicles running, all in one place.
               </Text>
             </Flex>
             <Flex
@@ -401,15 +401,15 @@ export const Home = () => {
                 className={oswald.className}
                 textTransform="uppercase"
               >
-                Built by people who work on cars
+                Built by people who work with machines
               </Text>
               <Text mb="45px" width={{ base: "100%", lg: "489px" }} color="#5a5a5a">
-                We started as a workshop, so we know how much a wrong part or a
-                late delivery costs you. That&apos;s why every order is
-                fitment-checked, every brand on our shelves is one we&apos;d put
-                on our own vehicles, and every part is backed by a minimum
-                12-month warranty. Whether you&apos;re a professional mechanic
-                or a weekend DIYer, you get trade-level quality at fair prices.
+                We started on the workshop floor, so we know how much a wrong
+                part or a late delivery costs you. That&apos;s why every order
+                is quality-checked before it ships, and every part is backed
+                by a minimum 12-month warranty. Whether you run a fleet, a
+                workshop or a construction site, you get trade-level quality
+                at fair prices.
               </Text>
               <Link href="/about">
                 <Button

@@ -354,10 +354,10 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
             mb='25px'
             color='#5a5a5a'>
             {info?.description ||
-              'OEM-quality replacement part, fitment-checked before dispatch and covered by a minimum 12-month warranty.'}
+              'Quality-checked before dispatch and covered by a minimum 12-month warranty.'}
           </Text>
           <Flex flexDir='column' fontSize='14px' color='#5a5a5a' gap='4px'>
-            <Text>✓ Guaranteed fitment, checked against your vehicle</Text>
+            <Text>✓ Quality-checked before dispatch</Text>
             <Text>✓ Same-day dispatch on orders before 2pm</Text>
             <Text>✓ 14-day hassle-free returns</Text>
             <Text>✓ Minimum 12-month warranty</Text>

@@ -29,7 +29,7 @@ export const useProduct = (id: string) => {
 
 // ------------------------------ admin -------------------------------------
 
-const TOKEN_KEY = 'maise-admin-token';
+const TOKEN_KEY = 'best-equipments-admin-token';
 
 export const getAdminToken = () =>
   typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null;

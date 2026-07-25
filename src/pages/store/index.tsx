@@ -329,7 +329,7 @@ export const Store = () => {
     <>
       <Seo
         title='Shop Vehicle Parts Online'
-        description='Browse brakes, engine parts, filters, suspension, electrical and accessories from trusted brands. Naira prices, guaranteed fitment, nationwide delivery.'
+        description='Browse belts, bearings, chains, seals, excavator and drilling parts, and car care products from trusted brands. Naira prices, nationwide delivery.'
         path='/store'
       />
       <Layout>

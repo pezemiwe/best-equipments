@@ -13,7 +13,7 @@ export default function HomePage() {
             name: SITE_NAME,
             url: SITE_URL,
             description:
-              "Genuine and OEM-quality vehicle parts with guaranteed fitment and fast delivery across Nigeria.",
+              "Industrial equipment and vehicle parts in Nigeria: belts, bearings, seals, excavator parts and car care products, with fast nationwide delivery.",
             telephone: "+2348162309761",
             currenciesAccepted: "NGN",
             address: {

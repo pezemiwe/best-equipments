@@ -58,40 +58,50 @@ export const sizeMap = {
 
 export const productTypes = [
   {
-    name: "Engine Parts",
-    value: "engine",
+    name: "Belts",
+    value: "belts",
+    // Conveyor Belts, PVC Belt, Fan Belts, Timing Belt
   },
   {
-    name: "Brakes",
-    value: "brakes",
+    name: "Chains & Sprockets",
+    value: "chainsSprockets",
+    // Chain, Sprockets, Chain Link
   },
   {
-    name: "Suspension & Steering",
-    value: "suspension",
+    name: "Power Transmission",
+    value: "powerTransmission",
+    // Coupling, Pulley, TaperLock
   },
   {
-    name: "Electrical & Lighting",
-    value: "electrical",
+    name: "Bearings",
+    value: "bearings",
+    // Bearing, Sleeve, Bearing Housing
   },
   {
-    name: "Filters",
-    value: "filters",
+    name: "Seals & Gaskets",
+    value: "sealsGaskets",
+    // Oil Seal, Hydraulic Seal, Mechanical Seal, Gasket, Gland Packing
   },
   {
-    name: "Oils & Fluids",
-    value: "oilsFluids",
+    name: "Excavator & Drilling Parts",
+    value: "excavatorDrilling",
+    // Caterpillar Bucket, Bucket Teeth, Hydraulic Chisel, Drilling Bit,
+    // Extension Rod, Shank Adapter
   },
   {
-    name: "Wheels & Tyres",
-    value: "wheels",
+    name: "Fasteners & Adhesives",
+    value: "fastenersAdhesives",
+    // Fastener, Gum
   },
   {
-    name: "Transmission",
-    value: "transmission",
+    name: "Industrial Supplies",
+    value: "industrialSupplies",
+    // Exhaust Wrapper, Fibre Glass, Grease, Battery
   },
   {
-    name: "Accessories & Tools",
-    value: "accessories",
+    name: "Car Care Products",
+    value: "carCare",
+    // Tyre Polish, Wash & Wax, Dashboard Cleaner, Glass Cleaner
   },
 ] as any;
 

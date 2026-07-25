@@ -26,7 +26,7 @@ function App({ Component, pageProps }: AppProps) {
         </title>
         <meta
           name='description'
-          content='Genuine and OEM-quality vehicle parts with guaranteed fitment and fast delivery across Nigeria.'
+          content='Industrial equipment and vehicle parts in Nigeria: belts, bearings, seals, excavator parts and car care products, with fast nationwide delivery.'
           key='description'
         />
         <meta name='viewport' content='width=device-width, initial-scale=1' />

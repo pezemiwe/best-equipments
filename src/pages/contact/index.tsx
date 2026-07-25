@@ -55,7 +55,7 @@ export const Contact = () => {
     <Layout>
       <Seo
         title='Contact Us - Find the Right Part'
-        description='Send us your vehicle make, model and year or VIN and we will confirm exact part fitment and price before you order. Free expert advice.'
+        description='Tell us the part or equipment you need and we will confirm availability and price before you order. Free expert advice.'
         path='/contact'
       />
       <Flex
@@ -124,9 +124,9 @@ export const Contact = () => {
             Need help finding a part?
           </Text>
           <Text mb="30px" color="#5a5a5a" maxW="496px">
-            Send us your vehicle&apos;s make, model and year (or your VIN) plus
-            the part you need, and our team will confirm exact fitment and price
-            before you order.
+            Send us the part or equipment you&apos;re looking for, along with
+            your vehicle or machine details, and our team will confirm
+            availability and price before you order.
           </Text>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl mb="15px" isInvalid={!!errors.name}>
@@ -180,10 +180,10 @@ export const Contact = () => {
               </FormErrorMessage>
             </FormControl>
             <FormControl mb="15px">
-              <FormLabel htmlFor="vehicle">Vehicle (make, model, year)</FormLabel>
+              <FormLabel htmlFor="vehicle">Vehicle or equipment (optional)</FormLabel>
               <Input
                 id="vehicle"
-                placeholder="e.g. Toyota Corolla 2018, or your VIN"
+                placeholder="e.g. Toyota Corolla 2018, or CAT excavator model"
                 border="none"
                 width={{
                   base: "100%",

@@ -4,8 +4,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 // Configure via env in production:
 //   ADMIN_PASSWORD - password for the admin portal
 //   ADMIN_SECRET   - secret used to sign session tokens
-const SECRET = process.env.ADMIN_SECRET || 'maise-dev-secret-change-me';
-const PASSWORD = process.env.ADMIN_PASSWORD || 'maise-admin';
+const SECRET = process.env.ADMIN_SECRET || 'best-equipments-dev-secret-change-me';
+const PASSWORD = process.env.ADMIN_PASSWORD || 'best-equipments-admin';
 const TOKEN_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours
 
 const sign = (payload: string) =>

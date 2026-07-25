@@ -22,16 +22,16 @@ import Seo from "@/components/Seo";
 export const About = () => {
   const productImages = [
     {
-      src: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=392&h=432&q=70",
-      alt: "engine parts",
+      src: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&w=392&h=432&q=70",
+      alt: "industrial belts",
     },
     {
       src: "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=392&h=432&q=70",
-      alt: "engine bay",
+      alt: "machine parts",
     },
     {
-      src: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=392&h=432&q=70",
-      alt: "vehicle",
+      src: "https://images.unsplash.com/photo-1504328345606-18aa54129790?auto=format&fit=crop&w=392&h=432&q=70",
+      alt: "heavy equipment",
     },
   ];
 
@@ -46,7 +46,7 @@ export const About = () => {
     <Layout>
       <Seo
         title='About Us'
-        description='Best Qualities Industrial Equipment Nig Ltd supplies genuine vehicle parts to mechanics, fleets and DIYers across Nigeria. 15+ years in the trade, 40+ trusted brands.'
+        description='Best Qualities Industrial Equipment Nig Ltd supplies belts, bearings, seals, excavator parts and vehicle parts across Nigeria. 15+ years in the trade, 40+ trusted brands.'
         path='/about'
       />
       <Flex
@@ -95,10 +95,11 @@ export const About = () => {
           maxW="700px"
         >
           Best Qualities Industrial Equipment Nig Ltd began life as a
-          family-run workshop. Today we supply
-          thousands of genuine and OEM-quality vehicle parts to mechanics,
-          fleets and home DIYers, with the same standard we always had: if we
-          wouldn&apos;t fit it to our own cars, we don&apos;t sell it.
+          family-run workshop. Today we supply thousands of belts, bearings,
+          seals, heavy equipment parts and vehicle parts to workshops, fleets
+          and construction sites across Nigeria, with the same standard we
+          always had: if we wouldn&apos;t use it ourselves, we don&apos;t
+          sell it.
         </Text>
         <Flex
           justifyContent="space-between"
@@ -163,13 +164,13 @@ export const About = () => {
           }}
         >
           <Text mb="30px">
-            Our mission is simple: take the guesswork and the risk out of buying
-            vehicle parts online. Every part we list is checked for fitment
-            against manufacturer data before it ships, sourced directly from
-            authorised distributors, and covered by a minimum 12-month
-            warranty. From routine service items like filters, pads, plugs and
-            oils to alternators, clutch kits and complete strut assemblies,
-            we stock the parts that keep vehicles on the road.
+            Our mission is simple: take the guesswork and the risk out of
+            buying industrial equipment and vehicle parts online. Every
+            product we list is quality-checked before it ships, sourced
+            directly from trusted suppliers, and covered by a minimum
+            12-month warranty. From belts, chains and bearings to excavator
+            buckets, hydraulic seals and car care products, we stock what
+            keeps your machines and vehicles running.
           </Text>
           <Text mb="30px">
             The company was founded by lifelong mechanics who grew tired of
@@ -185,11 +186,11 @@ export const About = () => {
               lg: "100px",
             }}
           >
-            Whether you run a professional garage, manage a fleet, or service
-            your own car on the weekend, you get the same trade-level quality
-            and fair pricing. If you&apos;re ever unsure which part fits your
-            vehicle, send us your registration or VIN and our team will confirm
-            it before you spend a cent.
+            Whether you run a workshop, manage a fleet, or operate heavy
+            machinery on a construction site, you get the same trade-level
+            quality and fair pricing. If you&apos;re ever unsure which part
+            you need, send us the details and our team will confirm it before
+            you spend a cent.
           </Text>
           <Flex
             className={oswald.className}

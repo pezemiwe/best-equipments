@@ -27,9 +27,9 @@ const montserrat = Montserrat({
 
 const faqs = [
   {
-    question: "How do I know a part will fit my vehicle?",
+    question: "How do I know I'm ordering the right part?",
     answer:
-      "Every order is fitment-checked before dispatch. Add your vehicle's make, model and year (or VIN) at checkout or via the contact page, and our team will verify the part against manufacturer data. If a part we confirmed doesn't fit, return shipping is on us.",
+      "If you're unsure, describe your vehicle or machine (make, model, year) and the part you need via the contact page before you order. Our team will confirm availability and compatibility. If a part we confirmed turns out wrong, return shipping is on us.",
   },
   {
     question: "How fast is delivery?",
@@ -42,9 +42,9 @@ const faqs = [
       "You can return any part within 14 days of receiving it, as long as it's unused, uninstalled and in its original packaging. Electrical parts that have been fitted can't be returned unless faulty. To start a return, email support@bestqualities.ng with your order number.",
   },
   {
-    question: "Are your parts genuine?",
+    question: "Are your products genuine?",
     answer:
-      "We sell genuine OEM parts and certified aftermarket parts from established brands like Bosch, NGK, Brembo, Gates and Mann-Filter, sourced directly from authorised distributors. Every part carries a minimum 12-month warranty.",
+      "We sell genuine and certified parts from established brands like Bosch, SKF, Gates, Fenner and Caterpillar, sourced directly from authorised distributors. Every part carries a minimum 12-month warranty.",
   },
   {
     question: "What does the warranty cover?",
@@ -52,9 +52,9 @@ const faqs = [
       "All parts carry a minimum 12-month warranty against manufacturing defects; many brands offer longer. The warranty covers replacement or refund of the part itself. Keep your order confirmation as proof of purchase; no registration needed.",
   },
   {
-    question: "Can you help me diagnose which part I need?",
+    question: "Can you help me identify which part I need?",
     answer:
-      "Yes. Describe the symptoms (noises, warning lights, fault codes) through the contact page along with your vehicle details, and one of our mechanics will point you to the likely part, free of charge and with no obligation to buy.",
+      "Yes. Describe the equipment or vehicle and the problem through the contact page, and one of our technicians will point you to the right part, free of charge and with no obligation to buy.",
   },
 ];
 
@@ -63,7 +63,7 @@ export const Faq = () => {
     <Layout>
       <Seo
         title='FAQ - Shipping, Returns & Warranty'
-        description='Answers on part fitment, delivery times and costs, 14-day returns and the minimum 12-month warranty on all vehicle parts.'
+        description='Answers on product compatibility, delivery times and costs, 14-day returns and the minimum 12-month warranty on all products.'
         path='/faq'
         jsonLd={{
           '@type': 'FAQPage',

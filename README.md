@@ -11,7 +11,7 @@ yarn install
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The admin portal is at `/admin` (default dev password: `maise-admin` — override with `ADMIN_PASSWORD`).
+Open [http://localhost:3000](http://localhost:3000). The admin portal is at `/admin` (default dev password: `best-equipments-admin` — override with `ADMIN_PASSWORD`).
 
 ## Environment variables
 
