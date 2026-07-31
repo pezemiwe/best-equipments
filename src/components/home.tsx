@@ -213,7 +213,6 @@ export const Home = () => {
         <Section position="relative" zIndex="1" pt={{ base: "90px", lg: "60px" }}>
           <Flex flexDir="column" maxW={{ base: "100%", lg: "660px" }} color="white">
             <Flex alignItems="center" gap="10px" mb="18px">
-              <Box w="34px" h="2px" bg={ACCENT} />
               <Text
                 fontSize={{ base: "11px", md: "12px" }}
                 letterSpacing="3px"
@@ -294,7 +293,7 @@ export const Home = () => {
       {/* ---------------------------------------------------------------- */}
       {/* Feature cards (overlap the hero for depth)                        */}
       {/* ---------------------------------------------------------------- */}
-      <Section mt={{ base: "-40px", md: "-56px" }} zIndex="2" position="relative">
+      <Section mt={{ base: "32px", md: "-56px" }} zIndex="2" position="relative">
         <SimpleGrid
           columns={{ base: 1, sm: 2, lg: 4 }}
           spacing={{ base: "12px", md: "18px" }}
@@ -392,6 +391,7 @@ export const Home = () => {
                       opacity="0.62"
                       transition="transform 0.5s ease, opacity 0.3s ease"
                       _groupHover={{ transform: "scale(1.07)", opacity: "0.5" }}
+                      loading="lazy"
                     />
                     <Box
                       position="absolute"
@@ -517,6 +517,7 @@ export const Home = () => {
               minH={{ base: "260px", md: "380px" }}
               objectFit="cover"
               borderRadius="14px"
+              loading="lazy"
             />
             <Flex
               display={{ base: "none", md: "flex" }}

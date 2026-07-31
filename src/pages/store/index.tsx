@@ -119,7 +119,6 @@ export const FilterPanel = ({ filters }: { filters: StoreFilters }) => {
         <Text>{formatNaira(shownRange[1])}</Text>
       </Flex>
       <RangeSlider
-        aria-label={['minimum price', 'maximum price']}
         min={0}
         max={filters.maxPrice}
         step={5000}
@@ -136,8 +135,16 @@ export const FilterPanel = ({ filters }: { filters: StoreFilters }) => {
         <RangeSliderTrack bg='#e4e5e7'>
           <RangeSliderFilledTrack bg={ACCENT} />
         </RangeSliderTrack>
-        <RangeSliderThumb index={0} boxShadow='0 1px 4px rgba(0,0,0,0.3)' />
-        <RangeSliderThumb index={1} boxShadow='0 1px 4px rgba(0,0,0,0.3)' />
+        <RangeSliderThumb
+          index={0}
+          aria-label='Minimum price'
+          boxShadow='0 1px 4px rgba(0,0,0,0.3)'
+        />
+        <RangeSliderThumb
+          index={1}
+          aria-label='Maximum price'
+          boxShadow='0 1px 4px rgba(0,0,0,0.3)'
+        />
       </RangeSlider>
 
       <Flex alignItems='center' justifyContent='space-between' mb='24px'>
