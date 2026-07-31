@@ -13,19 +13,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { Oswald, Montserrat } from "@next/font/google";
 
-const oswald = Oswald({
-  weight: ["500"],
-  style: ["normal"],
-  subsets: ["latin"],
-});
 
-const montserrat = Montserrat({
-  weight: ["400"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-});
+
+
+
 
 const ACCENT = "#2563eb";
 
@@ -71,7 +63,7 @@ export const Contact = () => {
           lg: "1224px",
         }}
         justifyContent="space-between"
-        className={montserrat.className}
+        className={"font-montserrat"}
         fontSize="16px"
         color="#2e2e2e"
         flexDir={{
@@ -113,7 +105,7 @@ export const Contact = () => {
           justifyContent="center"
         >
           <Text
-            className={oswald.className}
+            className={"font-oswald"}
             textTransform="uppercase"
             fontSize={{
               base: "32px",

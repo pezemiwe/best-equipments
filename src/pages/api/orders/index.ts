@@ -11,8 +11,8 @@ export default async function handler(
     return res.status(405).json({ error: 'Method not allowed' });
   }
   try {
-    const { items, customerName, customerPhone } = req.body || {};
-    const order = await createOrder({ items, customerName, customerPhone });
+    const { items, customerName, customerPhone, customerCity } = req.body || {};
+    const order = await createOrder({ items, customerName, customerPhone, customerCity });
     res.status(201).json(order);
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });

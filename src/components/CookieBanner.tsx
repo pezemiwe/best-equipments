@@ -1,13 +1,9 @@
 import * as React from 'react';
 import { Button, Flex, Text } from '@chakra-ui/react';
 import Link from 'next/link';
-import { Montserrat } from '@next/font/google';
 
-const montserrat = Montserrat({
-  weight: ['400'],
-  style: ['normal'],
-  subsets: ['latin'],
-});
+
+
 
 const CONSENT_KEY = 'bq-cookie-consent';
 
@@ -43,7 +39,7 @@ export const CookieBanner = () => {
       flexDir={{ base: 'column', md: 'row' }}
       gap='12px'
       boxShadow='0 -4px 20px rgba(0,0,0,0.25)'
-      className={montserrat.className}>
+      className={"font-montserrat"}>
       <Text fontSize='13px' maxW='720px' color='#cbd5e1'>
         We use browser storage to keep your cart between visits and remember
         your preferences. No tracking, no ads. See our{' '}

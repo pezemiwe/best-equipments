@@ -18,8 +18,12 @@ import {
   Progress,
   useToast,
   SystemStyleObject,
+  FormControl,
+  FormLabel,
+  Input,
+  VStack,
 } from "@chakra-ui/react";
-import { Montserrat, Oswald } from "@next/font/google";
+
 import { useAppContext } from "@/context";
 import { AddIcon, MinusIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { BsBag, BsWhatsapp } from "react-icons/bs";
@@ -58,21 +62,12 @@ interface OrderResponse {
   error?: string;
 }
 
-const montserrat = Montserrat({
-  weight: ["400"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-});
 
-const oswald = Oswald({
-  weight: ["500"],
-  style: ["normal"],
-  subsets: ["latin"],
-});
+
+
 
 const ACCENT = "#2563eb";
 const DARK = "#0f172a";
-const FREE_SHIPPING_THRESHOLD = 50000;
 // WhatsApp order number (international format, no leading 0 or +)
 const WHATSAPP_NUMBER = "2348162309761";
 
@@ -87,6 +82,8 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
   } = useAppContext();
 
   const router = useRouter();
+  const montserratClassName = "font-montserrat" ?? "";
+  const oswaldClassName = "font-oswald" ?? "";
 
   function notMobile() {
     const userAgent =
@@ -94,10 +91,26 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
     return !/Mobile/.test(userAgent);
   }
 
-  const remainingForFreeShipping = FREE_SHIPPING_THRESHOLD - totalCost;
-
   const [placing, setPlacing] = React.useState(false);
   const toast = useToast();
+
+  const [customerName, setCustomerName] = React.useState("");
+  const [customerPhone, setCustomerPhone] = React.useState("");
+  const [customerCity, setCustomerCity] = React.useState("");
+
+  React.useEffect(() => {
+    setCustomerName(localStorage.getItem("customerName") || "");
+    setCustomerPhone(localStorage.getItem("customerPhone") || "");
+    setCustomerCity(localStorage.getItem("customerCity") || "");
+  }, []);
+
+  const saveField = (key: string, value: string, setter: React.Dispatch<React.SetStateAction<string>>) => {
+    setter(value);
+    localStorage.setItem(key, value);
+  };
+
+  const isPhoneValid = /^(080|090|070|081|091|\+234|234)\d{7,10}$/.test(customerPhone.replace(/[\s-]/g, ''));
+  const isFormValid = customerName.trim().length >= 2 && isPhoneValid && customerCity.trim().length > 0;
 
   const openWhatsApp = (
     lines: string[],
@@ -106,6 +119,9 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
   ): void => {
     const message = [
       "Hello Best Qualities Industrial Equipment! I would like to place an order:",
+      "",
+      `Name: ${customerName.trim()}`,
+      `City: ${customerCity.trim()}`,
       "",
       ...lines,
       "",
@@ -137,6 +153,9 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
               quantity: item.quantity,
             }),
           ),
+          customerName: customerName.trim(),
+          customerPhone: customerPhone.trim(),
+          customerCity: customerCity.trim(),
         }),
       });
       const data: OrderResponse = await response.json();
@@ -189,7 +208,7 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
     >
       {notMobile() && <DrawerOverlay />}
       <DrawerContent
-        className={montserrat.className}
+        className={"font-montserrat"}
         mt={{
           base: "80px",
           lg: "0px",
@@ -207,7 +226,7 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
 
         <DrawerHeader
           borderBottom="1px solid #ececec"
-          className={oswald.className}
+          className={"font-oswald"}
           textTransform="uppercase"
           fontSize="18px"
           display="flex"
@@ -235,7 +254,7 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
               <Icon as={BsBag} boxSize="42px" color="#d0d0d0" mb="20px" />
               <Text
                 fontSize="20px"
-                className={oswald.className}
+                className={"font-oswald"}
                 textTransform="uppercase"
                 mb="8px"
               >
@@ -260,28 +279,6 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
             </Flex>
           ) : (
             <>
-              {remainingForFreeShipping > 0 ? (
-                <Box mt="16px" mb="4px">
-                  <Text fontSize="13px" color="#5a5a5a" mb="6px">
-                    Add{" "}
-                    <Text as="span" fontWeight="bold" color={ACCENT}>
-                      ₦{remainingForFreeShipping.toLocaleString()}
-                    </Text>{" "}
-                    more for free shipping
-                  </Text>
-                  <Progress
-                    value={(totalCost / FREE_SHIPPING_THRESHOLD) * 100}
-                    size="xs"
-                    sx={{ "& > div": { background: ACCENT } }}
-                    bg="#ececec"
-                  />
-                </Box>
-              ) : (
-                <Text mt="16px" mb="4px" fontSize="13px" color="green.600">
-                  ✓ Your order qualifies for free shipping
-                </Text>
-              )}
-
               {Object.values(cart).map((item) => (
                 <Flex
                   key={item.id}
@@ -371,11 +368,7 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
                 mb="6px"
               >
                 <Text>Shipping</Text>
-                <Text>
-                  {totalCost >= FREE_SHIPPING_THRESHOLD
-                    ? "Free"
-                    : "Calculated at checkout"}
-                </Text>
+                <Text>Confirmed on WhatsApp before dispatch</Text>
               </Flex>
               <Flex
                 justifyContent="space-between"
@@ -383,7 +376,7 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
                 mb="16px"
               >
                 <Text
-                  className={oswald.className}
+                  className={"font-oswald"}
                   textTransform="uppercase"
                   fontSize="16px"
                 >
@@ -393,6 +386,35 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
                   ₦{totalCost?.toLocaleString()}
                 </Text>
               </Flex>
+              <VStack spacing="12px" mb="16px" align="stretch">
+                <FormControl isRequired>
+                  <FormLabel fontSize="13px" mb="4px">Full Name</FormLabel>
+                  <Input 
+                    size="sm" 
+                    value={customerName} 
+                    onChange={(e) => saveField("customerName", e.target.value, setCustomerName)} 
+                    placeholder="John Doe" 
+                  />
+                </FormControl>
+                <FormControl isRequired isInvalid={customerPhone.length > 0 && !isPhoneValid}>
+                  <FormLabel fontSize="13px" mb="4px">Phone Number</FormLabel>
+                  <Input 
+                    size="sm" 
+                    value={customerPhone} 
+                    onChange={(e) => saveField("customerPhone", e.target.value, setCustomerPhone)} 
+                    placeholder="08012345678" 
+                  />
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel fontSize="13px" mb="4px">City / State</FormLabel>
+                  <Input 
+                    size="sm" 
+                    value={customerCity} 
+                    onChange={(e) => saveField("customerCity", e.target.value, setCustomerCity)} 
+                    placeholder="Lagos" 
+                  />
+                </FormControl>
+              </VStack>
               <Button
                 bg="#25D366"
                 color="white"
@@ -403,6 +425,7 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
                 fontWeight="bold"
                 leftIcon={<Icon as={BsWhatsapp} boxSize="18px" />}
                 _hover={{ opacity: "0.85" }}
+                isDisabled={!isFormValid}
                 isLoading={placing}
                 loadingText="PLACING ORDER"
                 onClick={orderViaWhatsApp}

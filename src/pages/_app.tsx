@@ -2,17 +2,13 @@ import { ChakraProvider } from '@chakra-ui/react';
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { Roboto } from '@next/font/google';
+
 import { AppProvider } from '@/context';
 import CookieBanner from '@/components/CookieBanner';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-const roboto = Roboto({
-  weight: ['400', '700'],
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-});
+
 
 const queryClient = new QueryClient();
 
@@ -34,7 +30,7 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
       <AppProvider>
         <ChakraProvider>
-          <main className={roboto.className}>
+          <main className={"font-roboto"}>
             <Component {...pageProps} />
             <CookieBanner />
           </main>

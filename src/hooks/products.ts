@@ -89,6 +89,20 @@ export const useDeleteProduct = () => {
   });
 };
 
+export const useBulkDeleteProducts = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { data } = await axios.delete(`${adminPath}/bulk`, {
+        data: { ids },
+        ...authHeaders(),
+      });
+      return data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [mainPath] }),
+  });
+};
+
 // ------------------------------ admin orders -------------------------------
 
 const adminOrdersPath = '/api/admin/orders';

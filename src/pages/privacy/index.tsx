@@ -2,19 +2,11 @@ import * as React from 'react';
 import Layout from '@/components/layout';
 import Seo from '@/components/Seo';
 import { Flex, Text } from '@chakra-ui/react';
-import { Oswald, Montserrat } from '@next/font/google';
 
-const oswald = Oswald({
-  weight: ['500'],
-  style: ['normal'],
-  subsets: ['latin'],
-});
 
-const montserrat = Montserrat({
-  weight: ['400'],
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-});
+
+
+
 
 const sections = [
   {
@@ -54,12 +46,12 @@ export default function Privacy() {
         flexDir='column'
         color='#2e2e2e'
         fontSize='16px'
-        className={montserrat.className}
+        className={"font-montserrat"}
         mt='120px'
         mb='80px'>
         <Text
           fontSize={{ base: '28px', lg: '40px' }}
-          className={oswald.className}
+          className={"font-oswald"}
           textTransform='uppercase'
           mb='10px'>
           Privacy Policy
@@ -70,7 +62,7 @@ export default function Privacy() {
         {sections.map((section) => (
           <Flex flexDir='column' key={section.title} mb='30px'>
             <Text
-              className={oswald.className}
+              className={"font-oswald"}
               fontSize='20px'
               mb='8px'>
               {section.title}

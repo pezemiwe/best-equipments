@@ -1,193 +1,432 @@
 import * as React from 'react';
-import { Button, Flex, Input, Link as Linker, Text } from '@chakra-ui/react';
-import { Oswald, Montserrat } from '@next/font/google';
-import { BsFacebook, BsInstagram, BsTwitter } from 'react-icons/bs';
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Input,
+  InputGroup,
+  Link as Linker,
+  SimpleGrid,
+  Text,
+  useToast,
+} from '@chakra-ui/react';
+
+import {
+  BsFacebook,
+  BsInstagram,
+  BsWhatsapp,
+  BsTelephoneFill,
+  BsEnvelopeFill,
+  BsGeoAltFill,
+  BsClockFill,
+} from 'react-icons/bs';
 import Link from 'next/link';
 
-const oswald = Oswald({
-  weight: ['500'],
-  style: ['normal'],
-  subsets: ['latin'],
-});
 
-const montserrat = Montserrat({
-  weight: ['400'],
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-});
+
+
 
 const ACCENT = '#2563eb';
+const MUTED = '#94a3b8';
+const WHATSAPP = 'https://wa.me/2348162309761';
+
+const quickLinks = [
+  { label: 'Shop products', href: '/store' },
+  { label: 'About us', href: '/about' },
+  { label: 'Shipping & returns', href: '/faq' },
+  { label: 'Ask an expert', href: '/contact' },
+  { label: 'Privacy policy', href: '/privacy' },
+];
+
+const ColumnHeading = ({ children }: { children: React.ReactNode }) => (
+  <Text
+    className={"font-oswald"}
+    fontSize='15px'
+    letterSpacing='1.5px'
+    textTransform='uppercase'
+    color='white'
+    mb='18px'
+  >
+    {children}
+  </Text>
+);
 
 export const Footer = () => {
+  const [email, setEmail] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+  const toast = useToast();
+
+  const handleSubscribe = async () => {
+    if (!email || !email.includes('@')) {
+      toast({
+        title: 'Please enter a valid email.',
+        status: 'warning',
+        duration: 3000,
+      });
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        toast({
+          title: 'Subscribed successfully!',
+          status: 'success',
+          duration: 3000,
+        });
+        setEmail('');
+      } else {
+        const data = await res.json();
+        toast({
+          title: data.error || 'Subscription failed',
+          status: 'error',
+          duration: 3000,
+        });
+      }
+    } catch (err) {
+      toast({ title: 'An error occurred', status: 'error', duration: 3000 });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <Flex
-      bg='#0f172a'
+    <Box
+      as='footer'
       w='100%'
-      py='16'
-      justifyContent='center'
-      h={{
-        base: 'auto',
-        lg: '440px',
-      }}
-      color='#ffffff'
-      className={montserrat.className}
-      px={{
-        base: '16px',
-        lg: '0px',
-      }}>
+      bg='#0f172a'
+      color='white'
+      className={"font-montserrat"}
+      mt='auto'
+    >
       <Flex
-        maxW={{
-          base: '100%',
-          md: '450px',
-          lg: '1224px',
-        }}
         w='100%'
-        flexDir='column'>
-        <Flex
-          w='100%'
-          justifyContent='space-between'
-          flexDir={{
-            base: 'column',
-            lg: 'row',
-          }}>
+        justifyContent='center'
+        px={{ base: '16px', md: '24px', lg: '32px' }}
+      >
+        <Flex flexDir='column' w='100%' maxW='1280px'>
+          {/* ---------------- Newsletter bar ---------------- */}
           <Flex
-            fontSize='16px'
-            w={{ base: '100%', lg: '55%' }}
+            mt={{ base: '48px', md: '64px' }}
+            p={{ base: '24px', md: '32px' }}
+            bg='#152238'
+            border='1px solid #1e293b'
+            borderRadius='14px'
+            flexDir={{ base: 'column', lg: 'row' }}
+            alignItems={{ base: 'stretch', lg: 'center' }}
             justifyContent='space-between'
-            pt='15px'
-            flexDir={{
-              base: 'column',
-              lg: 'row',
-            }}>
-            <Flex
-              flexDir='column'
-              mb={{
-                base: '30px',
-                lg: '0px',
-              }}>
-              <Text className={oswald.className} fontSize='20px' mb='8px' textTransform='uppercase'>
-                Visit us
+            gap={{ base: '20px', lg: '40px' }}
+          >
+            <Flex flexDir='column' flexShrink={0}>
+              <Text
+                className={"font-oswald"}
+                fontSize={{ base: '19px', md: '22px' }}
+                textTransform='uppercase'
+                letterSpacing='0.5px'
+              >
+                Get deals &amp; new arrivals
               </Text>
-              <Flex flexDir='column' color='#b9bcbf'>
-                <Text>3721 Single Street</Text>
-                <Text>Quincy, MA 02169</Text>
-                <Text mt='10px'>Mon - Sat: 8am - 6pm</Text>
-              </Flex>
+              <Text fontSize='14px' color={MUTED} mt='6px'>
+                Product specials and restock alerts. No spam, ever.
+              </Text>
             </Flex>
             <Flex
-              flexDir='column'
-              mb={{
-                base: '30px',
-                lg: '0px',
-              }}>
-              <Text className={oswald.className} fontSize='20px' mb='8px' textTransform='uppercase'>
-                Contact
-              </Text>
-              <Flex flexDir='column' color='#b9bcbf'>
-                <Text>+1 (347) 679-9566</Text>
-                <Text>support@bestqualities.ng</Text>
-              </Flex>
-            </Flex>
-            <Flex
-              flexDir='column'
-              mb={{
-                base: '30px',
-                lg: '0px',
-              }}>
-              <Text className={oswald.className} fontSize='20px' mb='8px' textTransform='uppercase'>
-                Quick links
-              </Text>
-              <Flex flexDir='column' color='#b9bcbf'>
-                <Link href='/store'>
-                  <Text _hover={{ color: '#fff' }}>Shop parts</Text>
-                </Link>
-                <Link href='/about'>
-                  <Text _hover={{ color: '#fff' }}>About us</Text>
-                </Link>
-                <Link href='/faq'>
-                  <Text _hover={{ color: '#fff' }}>Shipping & returns</Text>
-                </Link>
-                <Link href='/contact'>
-                  <Text _hover={{ color: '#fff' }}>Ask an expert</Text>
-                </Link>
-                <Link href='/privacy'>
-                  <Text _hover={{ color: '#fff' }}>Privacy policy</Text>
-                </Link>
-              </Flex>
+              as='form'
+              onSubmit={(e: React.FormEvent) => {
+                e.preventDefault();
+                handleSubscribe();
+              }}
+              gap='10px'
+              w={{ base: '100%', lg: 'auto' }}
+              flexDir={{ base: 'column', sm: 'row' }}
+              flex={{ lg: '1' }}
+              maxW={{ lg: '520px' }}
+            >
+              <InputGroup flex='1'>
+                <Input
+                  type='email'
+                  height='50px'
+                  bg='#0f172a'
+                  borderRadius='8px'
+                  border='1px solid #334155'
+                  placeholder='Your email address'
+                  color='white'
+                  fontSize='14px'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  _hover={{ borderColor: '#475569' }}
+                  _focus={{
+                    borderColor: ACCENT,
+                    boxShadow: `0 0 0 1px ${ACCENT}`,
+                  }}
+                  sx={{
+                    '&::placeholder': { color: '#64748b', fontSize: '14px' },
+                  }}
+                />
+              </InputGroup>
+              <Button
+                type='submit'
+                height='50px'
+                px='30px'
+                bg={ACCENT}
+                color='white'
+                borderRadius='8px'
+                fontSize='13px'
+                fontWeight='700'
+                letterSpacing='0.5px'
+                flexShrink={0}
+                _hover={{ bg: '#1d4ed8' }}
+                isLoading={isLoading}
+                loadingText='SUBSCRIBING'
+              >
+                SUBSCRIBE
+              </Button>
             </Flex>
           </Flex>
-          <Flex flexDir='column'>
+
+          {/* ---------------- Main columns ---------------- */}
+          <SimpleGrid
+            columns={{ base: 1, sm: 2, lg: 4 }}
+            spacingX={{ base: '24px', md: '40px' }}
+            spacingY={{ base: '36px', md: '44px' }}
+            py={{ base: '44px', md: '60px' }}
+          >
+            {/* Brand */}
+            <Flex flexDir='column'>
+              <Flex flexDir='column' lineHeight='1' mb='16px'>
+                <Flex alignItems='baseline'>
+                  <Text
+                    className={"font-oswald"}
+                    fontSize='22px'
+                    textTransform='uppercase'
+                  >
+                    Best
+                  </Text>
+                  <Text
+                    className={"font-oswald"}
+                    fontSize='22px'
+                    textTransform='uppercase'
+                    color={ACCENT}
+                    ml='6px'
+                  >
+                    Qualities
+                  </Text>
+                </Flex>
+                <Text
+                  fontSize='9px'
+                  letterSpacing='3.4px'
+                  color={MUTED}
+                  textTransform='uppercase'
+                  mt='5px'
+                >
+                  Industrial Equipment
+                </Text>
+              </Flex>
+              <Text fontSize='14px' color={MUTED} lineHeight='1.7' mb='22px'>
+                Suppliers of quality industrial equipment and vehicle parts to
+                workshops, fleets and construction sites across Nigeria.
+              </Text>
+              <Flex gap='10px'>
+                {[
+                  { icon: BsWhatsapp, href: WHATSAPP, label: 'WhatsApp' },
+                  {
+                    icon: BsFacebook,
+                    href: 'https://www.facebook.com/',
+                    label: 'Facebook',
+                  },
+                  {
+                    icon: BsInstagram,
+                    href: 'https://www.instagram.com/',
+                    label: 'Instagram',
+                  },
+                ].map((social) => (
+                  <Linker
+                    key={social.label}
+                    href={social.href}
+                    isExternal
+                    aria-label={social.label}
+                    display='flex'
+                    alignItems='center'
+                    justifyContent='center'
+                    boxSize='38px'
+                    borderRadius='8px'
+                    bg='#1e293b'
+                    color={MUTED}
+                    transition='all 0.2s ease'
+                    _hover={{ bg: ACCENT, color: 'white' }}
+                  >
+                    <Icon as={social.icon} boxSize='16px' />
+                  </Linker>
+                ))}
+              </Flex>
+            </Flex>
+
+            {/* Quick links */}
+            <Flex flexDir='column'>
+              <ColumnHeading>Quick links</ColumnHeading>
+              <Flex flexDir='column' gap='11px'>
+                {quickLinks.map((link) => (
+                  <Link href={link.href} key={link.href}>
+                    <Text
+                      fontSize='14px'
+                      color={MUTED}
+                      w='fit-content'
+                      transition='color 0.2s ease'
+                      _hover={{ color: 'white' }}
+                    >
+                      {link.label}
+                    </Text>
+                  </Link>
+                ))}
+              </Flex>
+            </Flex>
+
+            {/* Visit us */}
+            <Flex flexDir='column'>
+              <ColumnHeading>Visit us</ColumnHeading>
+              <Flex gap='10px' mb='16px'>
+                <Icon
+                  as={BsGeoAltFill}
+                  boxSize='13px'
+                  color={ACCENT}
+                  mt='4px'
+                  flexShrink={0}
+                />
+                <Text fontSize='14px' color={MUTED} lineHeight='1.7'>
+                  Area A6 / Shop 63, Machine Parts (UASPDA),
+                  <br />
+                  Opposite Auto Parts First Gate, Trade Fair,
+                  <br />
+                  Mile 2 &ndash; Badagry Expressway, Ojo, Lagos
+                </Text>
+              </Flex>
+              <Flex gap='10px'>
+                <Icon
+                  as={BsClockFill}
+                  boxSize='13px'
+                  color={ACCENT}
+                  mt='4px'
+                  flexShrink={0}
+                />
+                <Flex flexDir='column'>
+                  <Text fontSize='14px' color={MUTED}>
+                    Mon &ndash; Sat: 9am &ndash; 6pm
+                  </Text>
+                  <Text fontSize='14px' color={MUTED}>
+                    Sunday: Closed
+                  </Text>
+                </Flex>
+              </Flex>
+            </Flex>
+
+            {/* Contact */}
+            <Flex flexDir='column'>
+              <ColumnHeading>Contact</ColumnHeading>
+              <Flex flexDir='column' gap='14px'>
+                <Linker
+                  href='tel:+2348103447856'
+                  display='flex'
+                  alignItems='center'
+                  gap='10px'
+                  fontSize='14px'
+                  color={MUTED}
+                  w='fit-content'
+                  _hover={{ color: 'white', textDecoration: 'none' }}
+                >
+                  <Icon as={BsTelephoneFill} boxSize='13px' color={ACCENT} />
+                  +234 810 344 7856
+                </Linker>
+                <Linker
+                  href='mailto:bestindqualities@gmail.com'
+                  display='flex'
+                  alignItems='flex-start'
+                  gap='10px'
+                  fontSize='14px'
+                  color={MUTED}
+                  w='fit-content'
+                  wordBreak='break-word'
+                  _hover={{ color: 'white', textDecoration: 'none' }}
+                >
+                  <Icon
+                    as={BsEnvelopeFill}
+                    boxSize='13px'
+                    color={ACCENT}
+                    mt='4px'
+                    flexShrink={0}
+                  />
+                  bestindqualities@gmail.com
+                </Linker>
+                <Button
+                  as='a'
+                  href={WHATSAPP}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  mt='4px'
+                  h='44px'
+                  w='fit-content'
+                  px='20px'
+                  bg='#25D366'
+                  color='white'
+                  borderRadius='8px'
+                  fontSize='13px'
+                  fontWeight='700'
+                  leftIcon={<Icon as={BsWhatsapp} boxSize='16px' />}
+                  _hover={{ opacity: 0.9 }}
+                >
+                  CHAT WITH US
+                </Button>
+              </Flex>
+            </Flex>
+          </SimpleGrid>
+
+          {/* ---------------- Bottom bar ---------------- */}
+          <Flex
+            borderTop='1px solid #1e293b'
+            py='24px'
+            flexDir={{ base: 'column', md: 'row' }}
+            alignItems='center'
+            justifyContent='space-between'
+            gap='12px'
+          >
             <Text
-              className={oswald.className}
-              fontSize='20px'
-              mb='8px'
-              textTransform='uppercase'
-              w={{
-                base: '100%',
-                md: 'auto',
-              }}>
-              Get deals & new arrivals
+              fontSize='13px'
+              color='#64748b'
+              textAlign={{ base: 'center', md: 'left' }}
+            >
+              &copy; {new Date().getFullYear()} Best Qualities Industrial
+              Equipment Nig Ltd. All rights reserved.
             </Text>
-            <Text fontSize='14px' color='#b9bcbf' mb='12px'>
-              Parts specials and restock alerts. No spam, ever.
-            </Text>
-            <Input
-              height='48px'
-              w={{
-                base: '100%',
-                md: '388.93px',
-              }}
-              bg='#2a2e33'
-              borderRadius='6px'
-              border='none'
-              placeholder='Your email address'
-              pl='16px'
-              color='#ffffff'
-              sx={{
-                '&::placeholder': {
-                  color: '#8a8d90',
-                  fontSize: '14px',
-                },
-              }}
-            />
-            <Button
-              width='151.9px'
-              height='50.9px'
-              bg={ACCENT}
-              color='#ffffff'
-              borderRadius='6px'
-              fontWeight='bold'
-              _hover={{ opacity: 0.85 }}
-              mt='20px'>
-              SUBSCRIBE
-            </Button>
-          </Flex>
-        </Flex>
-        <Flex
-          mt='60px'
-          w='100%'
-          justifyContent='space-between'
-          alignItems={{ base: 'flex-start', md: 'center' }}
-          flexDir={{ base: 'column', md: 'row' }}
-          gap='20px'>
-          <Text fontSize='13px' color='#8a8d90'>
-            © {new Date().getFullYear()} Best Qualities Industrial Equipment
-            Nig Ltd. All rights reserved.
-          </Text>
-          <Flex width='123px' alignItems='center' justifyContent='space-between'>
-            <Linker href='https://twitter.com/' isExternal>
-              <BsTwitter size='20px' />
-            </Linker>
-            <Linker href='https://www.facebook.com/' isExternal>
-              <BsFacebook size='20px' />
-            </Linker>
-            <Linker href='https://www.instagram.com/' isExternal>
-              <BsInstagram size='20px' />
-            </Linker>
+            <Flex gap='20px'>
+              <Link href='/privacy'>
+                <Text
+                  fontSize='13px'
+                  color='#64748b'
+                  _hover={{ color: 'white' }}
+                  transition='color 0.2s ease'
+                >
+                  Privacy
+                </Text>
+              </Link>
+              <Link href='/faq'>
+                <Text
+                  fontSize='13px'
+                  color='#64748b'
+                  _hover={{ color: 'white' }}
+                  transition='color 0.2s ease'
+                >
+                  Shipping &amp; returns
+                </Text>
+              </Link>
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
-    </Flex>
+    </Box>
   );
 };
 

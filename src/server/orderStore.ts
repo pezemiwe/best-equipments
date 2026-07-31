@@ -25,6 +25,7 @@ export type Order = {
   total: number;
   customerName: string;
   customerPhone: string;
+  customerCity: string;
   status: OrderStatus;
   createdAt: number;
   updatedAt: number;
@@ -52,6 +53,7 @@ const rowToOrder = (row: any): Order => ({
   total: Number(row.total) || 0,
   customerName: row.customer_name,
   customerPhone: row.customer_phone,
+  customerCity: row.customer_city || '',
   status: row.status,
   createdAt: Number(row.created_at),
   updatedAt: Number(row.updated_at),
@@ -62,9 +64,9 @@ const saveOrder = async (order: Order, isNew: boolean) => {
     await ensureSchema();
     if (isNew) {
       await sql()`
-        INSERT INTO orders (id, reference, items, total, customer_name, customer_phone, status, created_at, updated_at)
+        INSERT INTO orders (id, reference, items, total, customer_name, customer_phone, customer_city, status, created_at, updated_at)
         VALUES (${order.id}, ${order.reference}, ${JSON.stringify(order.items)}, ${order.total},
-                ${order.customerName}, ${order.customerPhone}, ${order.status},
+                ${order.customerName}, ${order.customerPhone}, ${order.customerCity}, ${order.status},
                 ${order.createdAt}, ${order.updatedAt})`;
     } else {
       await sql()`
@@ -100,6 +102,7 @@ export const createOrder = async (input: {
   items: { id: string; quantity: number }[];
   customerName?: string;
   customerPhone?: string;
+  customerCity?: string;
 }): Promise<Order> => {
   if (!input.items?.length) throw new Error('Order has no items');
   if (input.items.length > 50) throw new Error('Too many items in order');
@@ -133,14 +136,23 @@ export const createOrder = async (input: {
     (acc, item) => acc + item.amount * item.quantity,
     0
   );
+  const name = String(input.customerName || '').trim().slice(0, 100);
+  const phone = String(input.customerPhone || '').trim().slice(0, 30);
+  const city = String(input.customerCity || '').trim().slice(0, 100);
+
+  if (!name || name.length < 2) throw new Error('Customer name is required');
+  if (!phone || phone.length < 5) throw new Error('Customer phone is required');
+  if (!city) throw new Error('Customer city/state is required');
+
   const now = Date.now();
   const order: Order = {
     id: nanoid(14),
     reference: `TBE-${now.toString(36).toUpperCase()}${nanoid(3).toUpperCase()}`,
     items,
     total,
-    customerName: String(input.customerName || '').slice(0, 100),
-    customerPhone: String(input.customerPhone || '').slice(0, 30),
+    customerName: name,
+    customerPhone: phone,
+    customerCity: city,
     status: 'pending',
     createdAt: now,
     updatedAt: now,

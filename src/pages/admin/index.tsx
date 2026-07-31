@@ -3,6 +3,7 @@ import {
   Badge,
   Box,
   Button,
+  Checkbox,
   Flex,
   FormControl,
   FormLabel,
@@ -54,7 +55,7 @@ import {
   ViewIcon,
   ViewOffIcon,
 } from '@chakra-ui/icons';
-import { Oswald, Montserrat } from '@next/font/google';
+
 import {
   adminLogin,
   getAdminToken,
@@ -62,6 +63,7 @@ import {
   useAdminOrders,
   useCreateProduct,
   useDeleteProduct,
+  useBulkDeleteProducts,
   useProducts,
   useUpdateOrderStatus,
   useUpdateProduct,
@@ -70,17 +72,9 @@ import {
 import { productTypes, categoryLabel } from '@/utils/cart';
 import Seo from '@/components/Seo';
 
-const oswald = Oswald({
-  weight: ['500'],
-  style: ['normal'],
-  subsets: ['latin'],
-});
 
-const montserrat = Montserrat({
-  weight: ['400'],
-  style: ['normal'],
-  subsets: ['latin'],
-});
+
+
 
 const ACCENT = '#2563eb';
 const DARK = '#0f172a';
@@ -147,7 +141,7 @@ const Login = ({ onSuccess }: { onSuccess: () => void }) => {
       bgImage="linear-gradient(rgba(20, 22, 26, 0.88), rgba(20, 22, 26, 0.88)), url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=1920&q=60')"
       bgSize='cover'
       bgPosition='center'
-      className={montserrat.className}>
+      className={"font-montserrat"}>
       <Box
         bg='white'
         w='420px'
@@ -171,7 +165,7 @@ const Login = ({ onSuccess }: { onSuccess: () => void }) => {
             alignItems='center'
             mb='6px'
             lineHeight='1'
-            className={oswald.className}>
+            className={"font-oswald"}>
             <Flex alignItems='baseline'>
               <Heading fontSize='24px' textTransform='uppercase'>
                 Best
@@ -279,6 +273,8 @@ export default function AdminPortal() {
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [preview, setPreview] = React.useState('');
   const [search, setSearch] = React.useState('');
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
+  const bulkDeleteProducts = useBulkDeleteProducts();
 
   React.useEffect(() => {
     setAuthed(!!getAdminToken());
@@ -392,6 +388,22 @@ export default function AdminPortal() {
     }
   };
 
+  const removeSelected = async () => {
+    if (!window.confirm(`Delete ${selectedIds.length} products? This cannot be undone.`)) return;
+    try {
+      await bulkDeleteProducts.mutateAsync(selectedIds);
+      toast({ title: 'Products deleted', status: 'success', duration: 3000 });
+      setSelectedIds([]);
+    } catch (error: any) {
+      if (error?.response?.status === 401) {
+        setAdminToken(null);
+        setAuthed(false);
+        return;
+      }
+      toast({ title: 'Delete failed', status: 'error', duration: 4000 });
+    }
+  };
+
   const changeOrderStatus = async (id: string, status: string) => {
     try {
       await updateOrderStatus.mutateAsync({ id, status });
@@ -435,7 +447,7 @@ export default function AdminPortal() {
   );
 
   return (
-    <Box minH='100vh' bg='#f4f5f7' className={montserrat.className} pb='60px'>
+    <Box minH='100vh' bg='#f4f5f7' className={"font-montserrat"} pb='60px'>
       <Seo title='Admin Portal' path='/admin' noIndex />
       <Flex
         bg={DARK}
@@ -444,7 +456,7 @@ export default function AdminPortal() {
         py='16px'
         alignItems='center'
         justifyContent='space-between'>
-        <Flex alignItems='center' className={oswald.className}>
+        <Flex alignItems='center' className={"font-oswald"}>
           <Flex flexDir='column' lineHeight='1'>
             <Flex alignItems='baseline'>
               <Text fontSize='18px' textTransform='uppercase'>
@@ -489,19 +501,19 @@ export default function AdminPortal() {
         <SimpleGrid columns={{ base: 2, md: 4 }} spacing='20px' mb='30px'>
           <Stat bg='white' p='20px' boxShadow='0 2px 8px rgba(0,0,0,0.05)'>
             <StatLabel>Total products</StatLabel>
-            <StatNumber className={oswald.className}>
+            <StatNumber className={"font-oswald"}>
               {products?.length ?? '-'}
             </StatNumber>
           </Stat>
           <Stat bg='white' p='20px' boxShadow='0 2px 8px rgba(0,0,0,0.05)'>
             <StatLabel>Pending orders</StatLabel>
-            <StatNumber className={oswald.className} color={ACCENT}>
+            <StatNumber className={"font-oswald"} color={ACCENT}>
               {orders ? pendingCount : '-'}
             </StatNumber>
           </Stat>
           <Stat bg='white' p='20px' boxShadow='0 2px 8px rgba(0,0,0,0.05)'>
             <StatLabel>In stock</StatLabel>
-            <StatNumber className={oswald.className}>
+            <StatNumber className={"font-oswald"}>
               {products
                 ? products.filter((p: any) => p.inStock !== false).length
                 : '-'}
@@ -509,7 +521,7 @@ export default function AdminPortal() {
           </Stat>
           <Stat bg='white' p='20px' boxShadow='0 2px 8px rgba(0,0,0,0.05)'>
             <StatLabel>Catalog value</StatLabel>
-            <StatNumber className={oswald.className}>
+            <StatNumber className={"font-oswald"}>
               ₦{totalValue.toLocaleString()}
             </StatNumber>
           </Stat>
@@ -547,15 +559,28 @@ export default function AdminPortal() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </InputGroup>
-          <Button
-            leftIcon={<AddIcon />}
-            bg={ACCENT}
-            color='white'
-            borderRadius='none'
-            _hover={{ opacity: 0.85 }}
-            onClick={openCreate}>
-            Add product
-          </Button>
+          <Flex gap='12px'>
+            {selectedIds.length > 0 && (
+              <Button
+                leftIcon={<DeleteIcon />}
+                colorScheme='red'
+                variant='outline'
+                borderRadius='none'
+                isLoading={bulkDeleteProducts.isLoading}
+                onClick={removeSelected}>
+                Delete selected ({selectedIds.length})
+              </Button>
+            )}
+            <Button
+              leftIcon={<AddIcon />}
+              bg={ACCENT}
+              color='white'
+              borderRadius='none'
+              _hover={{ opacity: 0.85 }}
+              onClick={openCreate}>
+              Add product
+            </Button>
+          </Flex>
         </Flex>
 
         {isLoading ? (
@@ -565,6 +590,20 @@ export default function AdminPortal() {
             <Table size='md'>
               <Thead bg='#fafafa'>
                 <Tr>
+                  <Th w='40px'>
+                    <Checkbox
+                      colorScheme='blue'
+                      isChecked={filtered.length > 0 && selectedIds.length === filtered.length}
+                      isIndeterminate={selectedIds.length > 0 && selectedIds.length < filtered.length}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedIds(filtered.map((p: any) => p.id));
+                        } else {
+                          setSelectedIds([]);
+                        }
+                      }}
+                    />
+                  </Th>
                   <Th>Product</Th>
                   <Th>Brand</Th>
                   <Th>Category</Th>
@@ -577,6 +616,19 @@ export default function AdminPortal() {
               <Tbody>
                 {filtered.map((product: any) => (
                   <Tr key={product.id}>
+                    <Td>
+                      <Checkbox
+                        colorScheme='blue'
+                        isChecked={selectedIds.includes(product.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds([...selectedIds, product.id]);
+                          } else {
+                            setSelectedIds(selectedIds.filter(id => id !== product.id));
+                          }
+                        }}
+                      />
+                    </Td>
                     <Td>
                       <Flex alignItems='center' gap='12px'>
                         <Image
@@ -644,7 +696,11 @@ export default function AdminPortal() {
                 ))}
               </Tbody>
             </Table>
-            {filtered.length === 0 && (
+            {products?.length === 0 ? (
+              <Text p='40px' textAlign='center' color='gray.500'>
+                Catalogue is empty. Click &quot;Add product&quot; to get started.
+              </Text>
+            ) : filtered.length === 0 && (
               <Text p='40px' textAlign='center' color='gray.500'>
                 No products found.
               </Text>
@@ -660,6 +716,8 @@ export default function AdminPortal() {
                     <Tr>
                       <Th>Reference</Th>
                       <Th>Date</Th>
+                      <Th>Customer</Th>
+                      <Th>Phone</Th>
                       <Th>Items</Th>
                       <Th isNumeric>Total</Th>
                       <Th>Status</Th>
@@ -674,6 +732,12 @@ export default function AdminPortal() {
                         </Td>
                         <Td fontSize='13px' color='gray.600'>
                           {new Date(order.createdAt).toLocaleString()}
+                        </Td>
+                        <Td fontSize='13px'>
+                          {order.customerName || <Text as="span" color="gray.400" fontStyle="italic">Unknown</Text>}
+                        </Td>
+                        <Td fontSize='13px'>
+                          {order.customerPhone || '-'}
                         </Td>
                         <Td fontSize='13px' maxW='320px'>
                           <Text noOfLines={2} whiteSpace='normal'>
@@ -735,8 +799,8 @@ export default function AdminPortal() {
 
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />
-        <ModalContent borderRadius='none' className={montserrat.className}>
-          <ModalHeader className={oswald.className}>
+        <ModalContent borderRadius='none' className={"font-montserrat"}>
+          <ModalHeader className={"font-oswald"}>
             {editingId ? 'Edit product' : 'Add new product'}
           </ModalHeader>
           <ModalCloseButton />

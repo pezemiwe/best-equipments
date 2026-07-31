@@ -11,25 +11,17 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout';
-import { Oswald, Montserrat } from '@next/font/google';
+
 import { useProduct, useProducts } from '@/hooks/products';
 import { useAppContext } from '@/context';
 import { categoryLabel } from '@/utils/cart';
-import ProductTile, { Stars, productMeta } from '@/components/ProductTile';
+import ProductTile from '@/components/ProductTile';
 import { relatedProducts } from '@/utils/search';
 import Seo, { absoluteUrl, SITE_NAME, SITE_URL } from '@/components/Seo';
 
-const oswald = Oswald({
-  weight: ['500'],
-  style: ['normal'],
-  subsets: ['latin'],
-});
 
-const montserrat = Montserrat({
-  weight: ['400'],
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-});
+
+
 
 const ACCENT = '#2563eb';
 
@@ -39,11 +31,12 @@ export const getServerSideProps = async ({ params }: any) => {
   try {
     const { getProduct } = await import('@/server/productStore');
     const product = await getProduct(String(params?.id || ''));
+    if (!product) return { notFound: true };
     return {
-      props: { initialProduct: product ? JSON.parse(JSON.stringify(product)) : null },
+      props: { initialProduct: JSON.parse(JSON.stringify(product)) },
     };
   } catch {
-    return { props: { initialProduct: null } };
+    return { notFound: true };
   }
 };
 
@@ -157,7 +150,7 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
           lg: '150px',
         }}
         justifyContent='space-between'
-        className={montserrat.className}
+        className={"font-montserrat"}
         px={{
           base: '16px',
           lg: '0px',
@@ -256,7 +249,7 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
               base: '30px',
               lg: '40px',
             }}
-            className={oswald.className}
+            className={"font-oswald"}
             textTransform='uppercase'
             lineHeight='1.2'
             mb='10px'>
@@ -266,38 +259,10 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
             {info?.brand && <Text>Brand: {info.brand}</Text>}
             {info?.sku && <Text>SKU: {info.sku}</Text>}
           </Flex>
-          {info && (
-            <Flex alignItems='center' gap='8px' mb='12px'>
-              <Stars rating={productMeta(info.id, info.amount).rating} />
-              <Text fontSize='13px' color='#7a7a7a'>
-                ({productMeta(info.id, info.amount).reviews} verified ratings)
-              </Text>
-            </Flex>
-          )}
           <Flex alignItems='baseline' gap='10px' mb='20px'>
             <Text fontSize='28px' fontWeight='bold' color='#0f172a'>
               ₦{info?.amount?.toLocaleString()}
             </Text>
-            {info && (
-              <>
-                <Text
-                  fontSize='16px'
-                  color='#b0b0b0'
-                  textDecoration='line-through'>
-                  ₦{productMeta(info.id, info.amount).oldPrice.toLocaleString()}
-                </Text>
-                <Text
-                  fontSize='13px'
-                  fontWeight='bold'
-                  color='white'
-                  bg={ACCENT}
-                  px='8px'
-                  py='2px'
-                  borderRadius='4px'>
-                  -{productMeta(info.id, info.amount).discount}%
-                </Text>
-              </>
-            )}
           </Flex>
           <Flex mb='25px'>
             <Button
@@ -354,13 +319,10 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
             mb='25px'
             color='#5a5a5a'>
             {info?.description ||
-              'Quality-checked before dispatch and covered by a minimum 12-month warranty.'}
+              'Quality-checked before dispatch.'}
           </Text>
           <Flex flexDir='column' fontSize='14px' color='#5a5a5a' gap='4px'>
             <Text>✓ Quality-checked before dispatch</Text>
-            <Text>✓ Same-day dispatch on orders before 2pm</Text>
-            <Text>✓ 14-day hassle-free returns</Text>
-            <Text>✓ Minimum 12-month warranty</Text>
           </Flex>
         </Flex>
       </Flex>
@@ -369,11 +331,11 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
           w='100%'
           maxWidth='1224px'
           flexDir='column'
-          className={montserrat.className}
+          className={"font-montserrat"}
           px={{ base: '16px', lg: '0px' }}
           mb={{ base: '60px', lg: '120px' }}>
           <Text
-            className={oswald.className}
+            className={"font-oswald"}
             fontSize={{ base: '22px', lg: '28px' }}
             textTransform='uppercase'
             color='#0f172a'

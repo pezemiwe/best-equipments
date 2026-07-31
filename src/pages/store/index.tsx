@@ -22,7 +22,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import * as React from 'react';
-import { Montserrat, Oswald } from '@next/font/google';
+
 import { useRouter } from 'next/router';
 import { AiOutlineBars, AiOutlineSearch } from 'react-icons/ai';
 import MobileFilter from '@/components/mobileFilter';
@@ -32,17 +32,9 @@ import { useProducts } from '@/hooks/products';
 import { productTypes, categoryLabel } from '@/utils/cart';
 import { searchAndSort, sortOptions, SortOption } from '@/utils/search';
 
-const montserrat = Montserrat({
-  weight: ['400'],
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-});
 
-const oswald = Oswald({
-  weight: ['500'],
-  style: ['normal'],
-  subsets: ['latin'],
-});
+
+
 
 const ACCENT = '#2563eb';
 
@@ -73,7 +65,7 @@ export const FilterPanel = ({ filters }: { filters: StoreFilters }) => {
 
   return (
     <Flex flexDir='column'>
-      <Text mb='12px' fontSize='17px' className={oswald.className}>
+      <Text mb='12px' fontSize='17px' className={"font-oswald"}>
         Category
       </Text>
       <Flex flexDir='column' mb='24px'>
@@ -96,7 +88,7 @@ export const FilterPanel = ({ filters }: { filters: StoreFilters }) => {
 
       {filters.brandOptions.length > 0 && (
         <>
-          <Text mb='12px' fontSize='17px' className={oswald.className}>
+          <Text mb='12px' fontSize='17px' className={"font-oswald"}>
             Brand
           </Text>
           <Flex flexDir='column' mb='24px' maxH='220px' overflowY='auto'>
@@ -119,7 +111,7 @@ export const FilterPanel = ({ filters }: { filters: StoreFilters }) => {
         </>
       )}
 
-      <Text mb='8px' fontSize='17px' className={oswald.className}>
+      <Text mb='8px' fontSize='17px' className={"font-oswald"}>
         Price
       </Text>
       <Flex justifyContent='space-between' fontSize='13px' color='#5a5a5a'>
@@ -338,7 +330,7 @@ export const Store = () => {
           maxWidth='1224px'
           color='#2e2e2e'
           fontSize='16px'
-          className={montserrat.className}
+          className={"font-montserrat"}
           mt='120px'
           px={{
             base: '16px',
@@ -354,7 +346,7 @@ export const Store = () => {
             gap='16px'>
             <Text
               fontSize={{ base: '26px', lg: '34px' }}
-              className={oswald.className}
+              className={"font-oswald"}
               textTransform='uppercase'>
               Vehicle Parts Store
             </Text>
@@ -455,13 +447,26 @@ export const Store = () => {
                     <Skeleton key={i} height='300px' borderRadius='8px' />
                   ))}
                 </SimpleGrid>
+              ) : products?.length === 0 ? (
+                <Flex
+                  flexDir='column'
+                  alignItems='center'
+                  py='80px'
+                  mb='100px'>
+                  <Text fontSize='20px' mb='10px' className={"font-oswald"}>
+                    Catalogue coming soon
+                  </Text>
+                  <Text fontSize='14px' color='#7a7a7a' mb='20px'>
+                    We are currently preparing our inventory. Please check back later.
+                  </Text>
+                </Flex>
               ) : filtered.length === 0 ? (
                 <Flex
                   flexDir='column'
                   alignItems='center'
                   py='80px'
                   mb='100px'>
-                  <Text fontSize='20px' mb='10px' className={oswald.className}>
+                  <Text fontSize='20px' mb='10px' className={"font-oswald"}>
                     No parts match your filters
                   </Text>
                   <Text fontSize='14px' color='#7a7a7a' mb='20px'>

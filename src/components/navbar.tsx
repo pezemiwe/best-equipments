@@ -12,23 +12,15 @@ import {
 } from '@chakra-ui/react';
 import { BsBag, BsSearch } from 'react-icons/bs';
 import { GrMenu, GrClose } from 'react-icons/gr';
-import { Oswald, Montserrat } from '@next/font/google';
+
 import Link from 'next/link';
 import ShoppingDrawer from './shoppingDrawer';
 import { useAppContext } from '@/context';
 import { useRouter } from 'next/router';
 
-const oswald = Oswald({
-  weight: ['600'],
-  style: ['normal'],
-  subsets: ['latin'],
-});
 
-const montserrat = Montserrat({
-  weight: ['400'],
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-});
+
+
 
 interface NavbarProps {
   navChange: boolean;
@@ -88,7 +80,7 @@ export default function Navbar({ navChange }: NavbarProps) {
         background={navChange ? '#ffffff' : 'rgba(255, 255, 255, 0.85)'}
         backdropFilter={navChange ? 'none' : 'blur(8px)'}
         boxShadow={navChange ? '0px 2px 4px rgba(0, 0, 0, 0.1)' : 'none'}
-        className={montserrat.className}
+        className={"font-montserrat"}
         fontSize='14px'>
         <Flex
           maxW='1224px'
@@ -110,7 +102,7 @@ export default function Navbar({ navChange }: NavbarProps) {
               flexDir='column'
               cursor='pointer'
               lineHeight='1'
-              className={oswald.className}
+              className={"font-oswald"}
               pt={{ base: '1', lg: '0' }}>
               <Flex alignItems='baseline'>
                 <Text

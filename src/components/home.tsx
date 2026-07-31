@@ -1,7 +1,10 @@
 import * as React from "react";
 import {
+  Box,
   Flex,
   Button,
+  Grid,
+  GridItem,
   Icon,
   Image,
   SimpleGrid,
@@ -14,483 +17,710 @@ import {
   FaShieldAlt,
   FaTools,
   FaHeadset,
-  FaBolt,
+  FaArrowRight,
+  FaWhatsapp,
 } from "react-icons/fa";
 import { useProducts } from "@/hooks/products";
 import ProductTile from "@/components/ProductTile";
 import { productTypes } from "@/utils/cart";
 
-import { Oswald, Montserrat } from "@next/font/google";
 
-const oswald = Oswald({
-  weight: ["500", "600"],
-  style: ["normal"],
-  subsets: ["latin"],
-});
 
-const montserrat = Montserrat({
-  weight: ["400"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-});
+
+
+
 
 const ACCENT = "#2563eb";
 const DARK = "#0f172a";
+const WHATSAPP = "https://wa.me/2348162309761";
+
+// Shell keeps every section on the same max width and gutters.
+const Section = ({ children, ...rest }: any) => (
+  <Flex
+    w="100%"
+    justifyContent="center"
+    px={{ base: "16px", md: "24px", lg: "32px" }}
+    {...rest}
+  >
+    <Flex flexDir="column" w="100%" maxW="1280px">
+      {children}
+    </Flex>
+  </Flex>
+);
+
+const SectionHeading = ({
+  eyebrow,
+  title,
+  subtitle,
+  align = "center",
+}: {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  align?: "center" | "left";
+}) => (
+  <Flex
+    flexDir="column"
+    alignItems={align === "center" ? "center" : "flex-start"}
+    textAlign={align === "center" ? "center" : "left"}
+    mb={{ base: "28px", md: "40px" }}
+  >
+    {eyebrow && (
+      <Text
+        fontSize={{ base: "11px", md: "12px" }}
+        letterSpacing="3px"
+        color={ACCENT}
+        fontWeight="700"
+        mb="10px"
+      >
+        {eyebrow}
+      </Text>
+    )}
+    <Text
+      className={"font-oswald"}
+      fontSize={{ base: "26px", md: "34px", lg: "40px" }}
+      lineHeight="1.15"
+      textTransform="uppercase"
+      color={DARK}
+    >
+      {title}
+    </Text>
+    {subtitle && (
+      <Text
+        mt="14px"
+        fontSize={{ base: "14px", md: "16px" }}
+        color="#64748b"
+        maxW="620px"
+        lineHeight="1.7"
+      >
+        {subtitle}
+      </Text>
+    )}
+  </Flex>
+);
 
 export const Home = () => {
-  const categories = [
-    {
-      src: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&w=656&h=830&q=70",
-      alt: "belts and chains",
-      type: "BELTS & CHAINS",
-      href: "/store?category=belts",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=656&h=830&q=70",
-      alt: "bearings and power transmission",
-      type: "BEARINGS & TRANSMISSION",
-      href: "/store?category=bearings",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1504328345606-18aa54129790?auto=format&fit=crop&w=656&h=830&q=70",
-      alt: "excavator and drilling parts",
-      type: "EXCAVATOR & DRILLING",
-      href: "/store?category=excavatorDrilling",
-    },
-  ];
+  const { data: products, isLoading: productsLoading } = useProducts();
+
+  const categoryImages: Record<string, string> = {
+    belts:
+      "https://images.unsplash.com/photo-1610891015188-5369212db097?auto=format&fit=crop&w=900&q=70",
+    chainsSprockets:
+      "https://images.unsplash.com/photo-1488272690691-2636704d6000?auto=format&fit=crop&w=900&q=70",
+    powerTransmission:
+      "https://images.unsplash.com/photo-1567093322102-6bdd32fba67d?auto=format&fit=crop&w=900&q=70",
+    bearings:
+      "https://images.unsplash.com/photo-1776671236324-d9b94d727f25?auto=format&fit=crop&w=900&q=70",
+    sealsGaskets:
+      "https://images.unsplash.com/photo-1699466622736-36c7b7893745?auto=format&fit=crop&w=900&q=70",
+    excavatorDrilling:
+      "https://images.unsplash.com/photo-1628645419184-26a1f2757340?auto=format&fit=crop&w=900&q=70",
+    fastenersAdhesives:
+      "https://images.unsplash.com/photo-1564226591723-659ff3852b2a?auto=format&fit=crop&w=900&q=70",
+    industrialSupplies:
+      "https://images.unsplash.com/photo-1567016958860-87d898933af1?auto=format&fit=crop&w=900&q=70",
+    carCare:
+      "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=900&q=70",
+  };
+
+  // Wide tiles at these positions create the bento rhythm on desktop.
+  const wideIndexes = [0, 5, 8];
+
+  const categoryCounts = React.useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const item of products || []) {
+      counts[item.category] = (counts[item.category] || 0) + 1;
+    }
+    return counts;
+  }, [products]);
 
   const features = [
     {
       icon: FaShieldAlt,
-      title: "Genuine Parts",
-      text: "Trusted brands and quality-checked stock, sourced right.",
+      title: "Genuine Products",
+      text: "Trusted brands, quality-checked before every dispatch.",
     },
     {
       icon: FaShippingFast,
-      title: "Fast Delivery",
-      text: "Same-day dispatch on in-stock orders placed before 2pm.",
+      title: "Nationwide Delivery",
+      text: "Fast dispatch to workshops and sites across Nigeria.",
     },
     {
       icon: FaTools,
       title: "Wide Range",
-      text: "From conveyor belts to excavator parts, all under one roof.",
+      text: "Belts, bearings, seals, heavy equipment parts and more.",
     },
     {
       icon: FaHeadset,
       title: "Expert Support",
-      text: "Talk to real technicians, not call scripts, 6 days a week.",
+      text: "Real technicians on hand to help you find the right part.",
     },
   ];
 
-  const gallery = [
-    "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=861&h=1100&q=70",
-    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=861&h=1100&q=70",
-    "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=861&h=1100&q=70",
-    "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=861&h=1100&q=70",
+  const stats = [
+    { value: "15+", label: "Years in the trade" },
+    { value: "40+", label: "Trusted brands" },
+    { value: "2,000+", label: "Products supplied" },
+    { value: "24hr", label: "Quote turnaround" },
   ];
 
-  const { data: products, isLoading: productsLoading } = useProducts();
-  const flashDeals = (products || []).slice(0, 8);
+  const brands = [
+    "BOSCH",
+    "SKF",
+    "GATES",
+    "FENNER",
+    "CATERPILLAR",
+    "JOHN CRANE",
+    "MOOG",
+    "TOTAL",
+  ];
+
+  const featured = (products || []).slice(0, 8);
 
   return (
-    <>
-      <Flex
-        flexDir="column"
+    <Flex
+      flexDir="column"
+      w="100%"
+      alignItems="center"
+      className={"font-montserrat"}
+      overflowX="hidden"
+    >
+      {/* ---------------------------------------------------------------- */}
+      {/* Hero                                                              */}
+      {/* ---------------------------------------------------------------- */}
+      <Box
+        position="relative"
         w="100%"
-        height="100%"
+        minH={{ base: "560px", md: "620px", lg: "700px" }}
+        display="flex"
         alignItems="center"
-        className={montserrat.className}
       >
-        {/* Hero */}
-        <Flex
-          w="100%"
-          height="607px"
-          flexDir="column"
-          justifyContent="center"
-          alignItems="center"
-          mb="90px"
-          color="#ffffff"
-          bgImage="linear-gradient(rgba(20, 22, 26, 0.75), rgba(20, 22, 26, 0.75)), url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=1920&q=70')"
+        <Box
+          position="absolute"
+          inset="0"
+          bgImage="url('https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=1920&q=75')"
           bgSize="cover"
-          bgRepeat="no-repeat"
-          px={{ base: "16px", lg: "0px" }}
           bgPosition="center"
-        >
-          <Flex
-            flexDir="column"
-            w="100%"
-            maxW={{ base: "100%", md: "450px", lg: "1224px" }}
-            mt="120px"
-          >
-            <Text
-              fontSize="14px"
-              letterSpacing="4px"
-              color={ACCENT}
-              fontWeight="bold"
-              mb="16px"
-            >
-              INDUSTRIAL EQUIPMENT & VEHICLE PARTS
-            </Text>
-            <Text
-              fontSize={{ base: "36px", lg: "56px" }}
-              lineHeight="1.15"
-              mb="24px"
-              className={oswald.className}
-              textTransform="uppercase"
-              maxW={{ base: "100%", lg: "640px" }}
-            >
-              The right part, for the right machine, every time
-            </Text>
-            <Text
-              mb={{ base: "25px", lg: "45px" }}
-              maxW={{ base: "100%", lg: "501px" }}
-              color="#e8e8e8"
-            >
-              From conveyor belts and bearings to excavator parts and car
-              care products, we stock thousands of quality industrial
-              supplies, backed by expert advice and fast nationwide delivery.
-            </Text>
-            <Flex gap="16px" flexWrap="wrap">
-              <Link href="/store">
-                <Button
-                  width="170px"
-                  height="51px"
-                  bg={ACCENT}
-                  color="#ffffff"
-                  borderRadius="6px"
-                  fontSize="14px"
-                  fontWeight="bold"
-                  _hover={{ opacity: 0.85 }}
-                >
-                  SHOP NOW
-                </Button>
-              </Link>
-              <Link href="/contact">
-                <Button
-                  width="170px"
-                  height="51px"
-                  bg="transparent"
-                  color="#ffffff"
-                  border="1px solid #ffffff"
-                  borderRadius="6px"
-                  fontSize="14px"
-                  _hover={{ bg: "rgba(255,255,255,0.12)" }}
-                >
-                  ASK AN EXPERT
-                </Button>
-              </Link>
-            </Flex>
-          </Flex>
-        </Flex>
-
-        <Flex
-          flexDir="column"
-          w="100%"
-          maxW={{ base: "100%", md: "450px", lg: "1224px" }}
-          px={{ base: "16px", lg: "0px" }}
-        >
-          {/* Feature bar */}
-          <SimpleGrid
-            columns={{ base: 1, md: 2, lg: 4 }}
-            spacing="24px"
-            w="100%"
-            mb={{ base: "70px", lg: "120px" }}
-          >
-            {features.map((feature) => (
-              <Flex
-                key={feature.title}
-                flexDir="column"
-                p="28px"
-                border="1px solid #e8e8e8"
-                _hover={{ borderColor: ACCENT, boxShadow: "0 8px 24px rgba(0,0,0,0.08)" }}
-                transition="all 0.25s ease"
-              >
-                <Icon as={feature.icon} boxSize="32px" color={ACCENT} mb="16px" />
-                <Text
-                  className={oswald.className}
-                  fontSize="18px"
-                  textTransform="uppercase"
-                  mb="8px"
-                >
-                  {feature.title}
-                </Text>
-                <Text fontSize="14px" color="#5a5a5a">
-                  {feature.text}
-                </Text>
-              </Flex>
-            ))}
-          </SimpleGrid>
-
-          {/* Category chips */}
-          <Flex
-            w="100%"
-            gap="10px"
-            flexWrap="wrap"
-            justifyContent="center"
-            mb={{ base: "60px", lg: "90px" }}
-          >
-            {productTypes.map((type: any) => (
-              <Link href={`/store?category=${type.value}`} key={type.value}>
-                <Button
-                  size="sm"
-                  bg="white"
-                  color="#3a3a3a"
-                  border="1px solid #e4e5e7"
-                  borderRadius="full"
-                  px="18px"
-                  fontWeight="500"
-                  _hover={{ bg: ACCENT, color: "white", borderColor: ACCENT }}
-                >
-                  {type.name}
-                </Button>
-              </Link>
-            ))}
-          </Flex>
-
-          {/* Flash sales */}
-          <Flex
-            flexDir="column"
-            w="100%"
-            mb={{ base: "70px", lg: "120px" }}
-            borderRadius="10px"
-            overflow="hidden"
-            border="1px solid #f0f0f0"
-            boxShadow="0 2px 12px rgba(0,0,0,0.05)"
-          >
-            <Flex
-              bg={ACCENT}
-              color="white"
-              px="20px"
-              py="12px"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Flex alignItems="center" gap="8px">
-                <Icon as={FaBolt} />
-                <Text
-                  className={oswald.className}
-                  fontSize="18px"
-                  textTransform="uppercase"
-                >
-                  Flash Sales
-                </Text>
-              </Flex>
-              <Link href="/store">
-                <Text
-                  fontSize="13px"
-                  fontWeight="bold"
-                  cursor="pointer"
-                  _hover={{ textDecoration: "underline" }}
-                >
-                  SEE ALL →
-                </Text>
-              </Link>
-            </Flex>
-            <SimpleGrid
-              columns={{ base: 2, md: 3, lg: 4 }}
-              spacing="12px"
-              p="14px"
-              bg="#fafafa"
-            >
-              {productsLoading
-                ? Array.from({ length: 8 }).map((_, i) => (
-                    <Skeleton key={i} h="300px" borderRadius="8px" />
-                  ))
-                : flashDeals.map((item: any) => (
-                    <ProductTile item={item} key={item.id} />
-                  ))}
-            </SimpleGrid>
-          </Flex>
-
-          {/* Categories */}
-          <Flex flexDir="column" w="100%">
-            <Flex flexDir="column" w="100%" alignItems="center">
+        />
+        <Box
+          position="absolute"
+          inset="0"
+          bgGradient={{
+            base: "linear(to-b, rgba(15,23,42,0.92), rgba(15,23,42,0.86))",
+            lg: "linear(to-r, rgba(15,23,42,0.96) 0%, rgba(15,23,42,0.88) 45%, rgba(15,23,42,0.55) 100%)",
+          }}
+        />
+        <Section position="relative" zIndex="1" pt={{ base: "90px", lg: "60px" }}>
+          <Flex flexDir="column" maxW={{ base: "100%", lg: "660px" }} color="white">
+            <Flex alignItems="center" gap="10px" mb="18px">
+              <Box w="34px" h="2px" bg={ACCENT} />
               <Text
-                className={oswald.className}
-                mb="20px"
-                fontSize={{ base: "28px", lg: "40px" }}
-                textAlign="center"
+                fontSize={{ base: "11px", md: "12px" }}
+                letterSpacing="3px"
+                color="#93c5fd"
+                fontWeight="700"
+              >
+                INDUSTRIAL EQUIPMENT &amp; VEHICLE PARTS
+              </Text>
+            </Flex>
+            <Text
+              fontSize={{ base: "34px", sm: "42px", md: "52px", lg: "60px" }}
+              lineHeight="1.08"
+              className={"font-oswald"}
+              textTransform="uppercase"
+              mb="20px"
+            >
+              The right part,
+              <br />
+              for the right machine,
+              <Text as="span" color={ACCENT}>
+                {" "}
+                every time
+              </Text>
+            </Text>
+            <Text
+              fontSize={{ base: "15px", md: "17px" }}
+              color="#cbd5e1"
+              maxW="540px"
+              lineHeight="1.75"
+              mb={{ base: "28px", md: "36px" }}
+            >
+              From conveyor belts and bearings to excavator parts and car care
+              products, we supply the components that keep Nigerian workshops,
+              fleets and sites running.
+            </Text>
+            <Flex gap="14px" flexWrap="wrap">
+              <Link href="/store">
+                <Button
+                  h={{ base: "48px", md: "54px" }}
+                  px="34px"
+                  bg={ACCENT}
+                  color="white"
+                  borderRadius="8px"
+                  fontSize={{ base: "13px", md: "14px" }}
+                  fontWeight="700"
+                  letterSpacing="0.5px"
+                  rightIcon={<Icon as={FaArrowRight} boxSize="12px" />}
+                  _hover={{ bg: "#1d4ed8", transform: "translateY(-2px)" }}
+                  transition="all 0.2s ease"
+                >
+                  SHOP PRODUCTS
+                </Button>
+              </Link>
+              <Button
+                as="a"
+                href={WHATSAPP}
+                target="_blank"
+                rel="noopener noreferrer"
+                h={{ base: "48px", md: "54px" }}
+                px="30px"
+                bg="rgba(255,255,255,0.08)"
+                color="white"
+                border="1px solid rgba(255,255,255,0.35)"
+                borderRadius="8px"
+                fontSize={{ base: "13px", md: "14px" }}
+                fontWeight="600"
+                leftIcon={<Icon as={FaWhatsapp} boxSize="17px" />}
+                _hover={{ bg: "rgba(255,255,255,0.18)" }}
+                transition="all 0.2s ease"
+              >
+                REQUEST A QUOTE
+              </Button>
+            </Flex>
+          </Flex>
+        </Section>
+      </Box>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Feature cards (overlap the hero for depth)                        */}
+      {/* ---------------------------------------------------------------- */}
+      <Section mt={{ base: "-40px", md: "-56px" }} zIndex="2" position="relative">
+        <SimpleGrid
+          columns={{ base: 1, sm: 2, lg: 4 }}
+          spacing={{ base: "12px", md: "18px" }}
+          w="100%"
+        >
+          {features.map((feature) => (
+            <Flex
+              key={feature.title}
+              flexDir="column"
+              bg="white"
+              p={{ base: "20px", md: "26px" }}
+              borderRadius="12px"
+              border="1px solid #e2e8f0"
+              boxShadow="0 4px 20px rgba(15,23,42,0.06)"
+              _hover={{
+                boxShadow: "0 12px 30px rgba(15,23,42,0.12)",
+                transform: "translateY(-4px)",
+                borderColor: "#bfdbfe",
+              }}
+              transition="all 0.25s ease"
+            >
+              <Flex
+                alignItems="center"
+                justifyContent="center"
+                boxSize="44px"
+                borderRadius="10px"
+                bg="#eff6ff"
+                mb="16px"
+              >
+                <Icon as={feature.icon} boxSize="20px" color={ACCENT} />
+              </Flex>
+              <Text
+                className={"font-oswald"}
+                fontSize={{ base: "16px", md: "17px" }}
                 textTransform="uppercase"
                 color={DARK}
+                mb="6px"
               >
-                Shop by category
+                {feature.title}
               </Text>
-              <Text
-                textAlign="center"
-                mb="45px"
-                fontSize="16px"
-                color="#5a5a5a"
-                width={{ base: "100%", lg: "537px" }}
-              >
-                From power transmission to heavy equipment parts, find what
-                keeps your machines and vehicles running, all in one place.
+              <Text fontSize="13.5px" color="#64748b" lineHeight="1.6">
+                {feature.text}
               </Text>
             </Flex>
-            <Flex
-              flexDirection={{ base: "column", lg: "row" }}
-              alignItems="center"
-              justifyContent="space-between"
-              w="100%"
-              mb={{ base: "0px", lg: "200px" }}
-              h="100%"
-            >
-              {categories.map((category) => (
-                <Flex
-                  key={category.src}
-                  position="relative"
-                  width={{ base: "100%", lg: "380px" }}
-                  flexDirection={{ base: "column", lg: "row" }}
-                  alignItems={{ base: "center", lg: "none" }}
-                >
-                  <Image
-                    src={category.src}
-                    alt={category.alt}
-                    height="496px"
-                    objectFit="cover"
-                    width={{ base: "100%", lg: "380px" }}
-                  />
-                  <Link href={category.href}>
-                    <Button
-                      height="51px"
-                      bg={DARK}
-                      color="#ffffff"
-                      borderRadius="6px"
-                      fontSize="13px"
-                      fontWeight="bold"
-                      minWidth="134px"
-                      maxWidth="240px"
-                      px="20px"
-                      position={{ base: "static", lg: "absolute" }}
-                      left={{ base: "0px", lg: "50%" }}
-                      transform={{ base: "none", lg: "translate(-50%, -50%)" }}
-                      bottom={{ base: "0px", lg: "-55px" }}
-                      _hover={{ bg: ACCENT }}
-                      mt={{ base: "25px", lg: "0px" }}
-                      mb={{ base: "35px", lg: "0px" }}
+          ))}
+        </SimpleGrid>
+      </Section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Category bento grid                                               */}
+      {/* ---------------------------------------------------------------- */}
+      <Section mt={{ base: "60px", md: "90px", lg: "110px" }}>
+        <SectionHeading
+          eyebrow="BROWSE OUR RANGE"
+          title="Shop by category"
+          subtitle="From power transmission to heavy equipment parts, find what keeps your machines and vehicles running, all in one place."
+        />
+        <Grid
+          templateColumns={{
+            base: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+            lg: "repeat(4, 1fr)",
+          }}
+          gap={{ base: "10px", md: "16px" }}
+          w="100%"
+        >
+          {productTypes.map((type: any, index: number) => {
+            const isWide = wideIndexes.includes(index);
+            const count = categoryCounts[type.value];
+            return (
+              <GridItem
+                key={type.value}
+                colSpan={{
+                  base: index === productTypes.length - 1 ? 2 : 1,
+                  md: 1,
+                  lg: isWide ? 2 : 1,
+                }}
+              >
+                <Link href={`/store?category=${type.value}`}>
+                  <Box
+                    position="relative"
+                    h={{ base: "150px", md: "190px", lg: "220px" }}
+                    borderRadius="12px"
+                    overflow="hidden"
+                    cursor="pointer"
+                    role="group"
+                    bg={DARK}
+                  >
+                    <Image
+                      src={categoryImages[type.value]}
+                      alt={type.name}
+                      w="100%"
+                      h="100%"
+                      objectFit="cover"
+                      opacity="0.62"
+                      transition="transform 0.5s ease, opacity 0.3s ease"
+                      _groupHover={{ transform: "scale(1.07)", opacity: "0.5" }}
+                    />
+                    <Box
+                      position="absolute"
+                      inset="0"
+                      bgGradient="linear(to-t, rgba(15,23,42,0.92) 5%, rgba(15,23,42,0.15) 70%)"
+                    />
+                    <Flex
+                      position="absolute"
+                      inset="0"
+                      flexDir="column"
+                      justifyContent="flex-end"
+                      p={{ base: "14px", md: "18px" }}
+                      color="white"
                     >
-                      {category.type}
-                    </Button>
-                  </Link>
+                      <Text
+                        className={"font-oswald"}
+                        fontSize={{ base: "14px", md: "18px", lg: "20px" }}
+                        textTransform="uppercase"
+                        lineHeight="1.2"
+                      >
+                        {type.name}
+                      </Text>
+                      <Flex alignItems="center" gap="6px" mt="4px">
+                        <Text fontSize="12px" color="#cbd5e1">
+                          {count ? `${count} product${count === 1 ? "" : "s"}` : "View range"}
+                        </Text>
+                        <Icon
+                          as={FaArrowRight}
+                          boxSize="10px"
+                          color={ACCENT}
+                          opacity="0"
+                          transform="translateX(-6px)"
+                          transition="all 0.25s ease"
+                          _groupHover={{ opacity: 1, transform: "translateX(0)" }}
+                        />
+                      </Flex>
+                    </Flex>
+                  </Box>
+                </Link>
+              </GridItem>
+            );
+          })}
+        </Grid>
+      </Section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Featured products                                                 */}
+      {/* ---------------------------------------------------------------- */}
+      <Section mt={{ base: "60px", md: "90px", lg: "110px" }}>
+        <Flex
+          justifyContent="space-between"
+          alignItems={{ base: "flex-start", sm: "flex-end" }}
+          flexDir={{ base: "column", sm: "row" }}
+          gap="14px"
+          mb={{ base: "24px", md: "34px" }}
+        >
+          <Flex flexDir="column">
+            <Text
+              fontSize={{ base: "11px", md: "12px" }}
+              letterSpacing="3px"
+              color={ACCENT}
+              fontWeight="700"
+              mb="10px"
+            >
+              IN STOCK NOW
+            </Text>
+            <Text
+              className={"font-oswald"}
+              fontSize={{ base: "26px", md: "34px", lg: "40px" }}
+              textTransform="uppercase"
+              lineHeight="1.15"
+              color={DARK}
+            >
+              Featured products
+            </Text>
+          </Flex>
+          <Link href="/store">
+            <Button
+              variant="outline"
+              borderColor="#cbd5e1"
+              color={DARK}
+              borderRadius="8px"
+              h="44px"
+              px="22px"
+              fontSize="13px"
+              fontWeight="600"
+              rightIcon={<Icon as={FaArrowRight} boxSize="11px" />}
+              _hover={{ bg: DARK, color: "white", borderColor: DARK }}
+            >
+              VIEW ALL
+            </Button>
+          </Link>
+        </Flex>
+        <SimpleGrid
+          columns={{ base: 2, md: 3, lg: 4 }}
+          spacing={{ base: "10px", md: "16px" }}
+        >
+          {productsLoading
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} h="300px" borderRadius="12px" />
+              ))
+            : featured.map((item: any) => (
+                <ProductTile item={item} key={item.id} />
+              ))}
+        </SimpleGrid>
+      </Section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Why us + stats                                                    */}
+      {/* ---------------------------------------------------------------- */}
+      <Section mt={{ base: "60px", md: "90px", lg: "110px" }}>
+        <Flex
+          flexDir={{ base: "column", lg: "row" }}
+          gap={{ base: "30px", lg: "60px" }}
+          alignItems="stretch"
+        >
+          <Box flex="1" position="relative" minH={{ base: "260px", md: "380px" }}>
+            <Image
+              src="https://images.unsplash.com/photo-1676018366904-c083ed678e60?auto=format&fit=crop&w=1000&q=75"
+              alt="Technician working on industrial machinery"
+              w="100%"
+              h="100%"
+              minH={{ base: "260px", md: "380px" }}
+              objectFit="cover"
+              borderRadius="14px"
+            />
+            <Flex
+              display={{ base: "none", md: "flex" }}
+              position="absolute"
+              bottom="-24px"
+              right="-16px"
+              bg={ACCENT}
+              color="white"
+              borderRadius="12px"
+              px="26px"
+              py="20px"
+              flexDir="column"
+              boxShadow="0 12px 30px rgba(37,99,235,0.35)"
+            >
+              <Text className={"font-oswald"} fontSize="30px" lineHeight="1">
+                15+
+              </Text>
+              <Text fontSize="12px" letterSpacing="1px" mt="4px">
+                YEARS IN THE TRADE
+              </Text>
+            </Flex>
+          </Box>
+
+          <Flex flex="1" flexDir="column" justifyContent="center">
+            <SectionHeading
+              align="left"
+              eyebrow="WHY BEST QUALITIES"
+              title="Built by people who work with machines"
+              subtitle="We started on the workshop floor, so we know how much a wrong part or a late delivery costs you. That's why every order is quality-checked before it ships. Whether you run a fleet, a workshop or a construction site, you get trade-level quality at fair prices."
+            />
+            <SimpleGrid columns={2} spacing="16px" mb="30px">
+              {stats.map((stat) => (
+                <Flex
+                  key={stat.label}
+                  flexDir="column"
+                  borderLeft="3px solid"
+                  borderColor="#e2e8f0"
+                  pl="16px"
+                >
+                  <Text
+                    className={"font-oswald"}
+                    fontSize={{ base: "24px", md: "30px" }}
+                    color={DARK}
+                    lineHeight="1.1"
+                  >
+                    {stat.value}
+                  </Text>
+                  <Text fontSize="13px" color="#64748b">
+                    {stat.label}
+                  </Text>
                 </Flex>
               ))}
-            </Flex>
-          </Flex>
-
-          {/* Story */}
-          <Flex
-            w="100%"
-            mb={{ base: "60px", lg: "200px" }}
-            color={DARK}
-            justifyContent="space-between"
-            flexDir={{ base: "column", lg: "row" }}
-          >
-            <Flex flexDir="column">
-              <Text
-                fontSize="14px"
-                my="32px"
-                letterSpacing="4px"
-                color={ACCENT}
-                fontWeight="bold"
-              >
-                WHY BEST QUALITIES
-              </Text>
-              <Text
-                fontSize={{ base: "28px", lg: "40px" }}
-                mb="32px"
-                width={{ base: "100%", lg: "433.3px" }}
-                className={oswald.className}
-                textTransform="uppercase"
-              >
-                Built by people who work with machines
-              </Text>
-              <Text mb="45px" width={{ base: "100%", lg: "489px" }} color="#5a5a5a">
-                We started on the workshop floor, so we know how much a wrong
-                part or a late delivery costs you. That&apos;s why every order
-                is quality-checked before it ships, and every part is backed
-                by a minimum 12-month warranty. Whether you run a fleet, a
-                workshop or a construction site, you get trade-level quality
-                at fair prices.
-              </Text>
+            </SimpleGrid>
+            <Flex gap="12px" flexWrap="wrap">
               <Link href="/about">
                 <Button
-                  width="169px"
-                  height="51px"
+                  h="50px"
+                  px="30px"
                   bg={DARK}
-                  color="#ffffff"
-                  borderRadius="6px"
-                  fontSize="14px"
-                  mb={{ base: "45px", lg: "0px" }}
+                  color="white"
+                  borderRadius="8px"
+                  fontSize="13px"
+                  fontWeight="700"
                   _hover={{ bg: ACCENT }}
                 >
                   OUR STORY
                 </Button>
               </Link>
+              <Link href="/contact">
+                <Button
+                  h="50px"
+                  px="30px"
+                  variant="outline"
+                  borderColor="#cbd5e1"
+                  color={DARK}
+                  borderRadius="8px"
+                  fontSize="13px"
+                  fontWeight="600"
+                  _hover={{ borderColor: DARK }}
+                >
+                  CONTACT US
+                </Button>
+              </Link>
             </Flex>
-            <Flex>
-              <Image
-                src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=861&h=972&q=70"
-                alt="engine workshop"
-                objectFit="cover"
-                height={{ base: "431px", lg: "560px" }}
-                width={{ base: "100%", lg: "496px" }}
-              />
-            </Flex>
-          </Flex>
-
-          {/* Gallery */}
-          <Flex
-            w="100%"
-            flexDir="column"
-            alignItems="center"
-            mb={{ base: "20px", lg: "100px" }}
-          >
-            <Text
-              fontSize={{ base: "28px", lg: "40px" }}
-              mb="32px"
-              className={oswald.className}
-              textAlign="center"
-              textTransform="uppercase"
-              color={DARK}
-            >
-              Trusted brands. Proven parts.
-            </Text>
-            <Flex
-              justifyContent="space-between"
-              alignItems="center"
-              w="100%"
-              flexDir={{ base: "column", lg: "row" }}
-            >
-              {gallery.map((src) => (
-                <Image
-                  src={src}
-                  alt="vehicle parts gallery"
-                  key={src}
-                  objectFit="cover"
-                  height={{ base: "469px", md: "488px", lg: "388px" }}
-                  width={{ base: "100%", lg: "288px" }}
-                  mb={{ base: "30px", lg: "0px" }}
-                />
-              ))}
-            </Flex>
-            <Link href="/store">
-              <Button
-                width={{ base: "181px", md: "215px" }}
-                height="51px"
-                bg={ACCENT}
-                color="#ffffff"
-                borderRadius="6px"
-                fontSize="14px"
-                fontWeight="bold"
-                mt={{ base: "20px", lg: "40px" }}
-                _hover={{ opacity: 0.85 }}
-              >
-                BROWSE ALL PARTS
-              </Button>
-            </Link>
           </Flex>
         </Flex>
-      </Flex>
-    </>
+      </Section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Brand strip                                                       */}
+      {/* ---------------------------------------------------------------- */}
+      <Section mt={{ base: "60px", md: "90px", lg: "110px" }}>
+        <Flex
+          flexDir="column"
+          alignItems="center"
+          bg="#f8fafc"
+          border="1px solid #e2e8f0"
+          borderRadius="14px"
+          py={{ base: "26px", md: "34px" }}
+          px={{ base: "16px", md: "30px" }}
+        >
+          <Text
+            fontSize="11px"
+            letterSpacing="3px"
+            color="#94a3b8"
+            fontWeight="700"
+            mb="22px"
+            textAlign="center"
+          >
+            BRANDS WE STOCK
+          </Text>
+          <Flex
+            wrap="wrap"
+            justifyContent="center"
+            alignItems="center"
+            gap={{ base: "18px", md: "40px" }}
+          >
+            {brands.map((brand) => (
+              <Text
+                key={brand}
+                className={"font-oswald"}
+                fontSize={{ base: "15px", md: "20px" }}
+                color="#94a3b8"
+                letterSpacing="1px"
+                _hover={{ color: DARK }}
+                transition="color 0.2s ease"
+              >
+                {brand}
+              </Text>
+            ))}
+          </Flex>
+        </Flex>
+      </Section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Closing CTA                                                       */}
+      {/* ---------------------------------------------------------------- */}
+      <Section
+        mt={{ base: "60px", md: "90px", lg: "110px" }}
+        mb={{ base: "60px", md: "90px", lg: "110px" }}
+      >
+        <Box
+          position="relative"
+          borderRadius="16px"
+          overflow="hidden"
+          bg={DARK}
+        >
+          <Box
+            position="absolute"
+            inset="0"
+            bgImage="url('https://images.unsplash.com/photo-1583024011792-b165975b52f5?auto=format&fit=crop&w=1600&q=70')"
+            bgSize="cover"
+            bgPosition="center"
+            opacity="0.28"
+          />
+          <Flex
+            position="relative"
+            flexDir={{ base: "column", md: "row" }}
+            alignItems={{ base: "flex-start", md: "center" }}
+            justifyContent="space-between"
+            gap="24px"
+            px={{ base: "24px", md: "48px" }}
+            py={{ base: "36px", md: "52px" }}
+            color="white"
+          >
+            <Flex flexDir="column" maxW="620px">
+              <Text
+                className={"font-oswald"}
+                fontSize={{ base: "24px", md: "32px" }}
+                textTransform="uppercase"
+                lineHeight="1.2"
+                mb="10px"
+              >
+                Can&apos;t find the part you need?
+              </Text>
+              <Text fontSize={{ base: "14px", md: "15px" }} color="#cbd5e1" lineHeight="1.7">
+                Send us the details of your machine or vehicle and our team will
+                source it, confirm the price, and get it moving. Most quotes
+                within 24 hours.
+              </Text>
+            </Flex>
+            <Button
+              as="a"
+              href={WHATSAPP}
+              target="_blank"
+              rel="noopener noreferrer"
+              flexShrink={0}
+              h={{ base: "50px", md: "56px" }}
+              px="32px"
+              bg="#25D366"
+              color="white"
+              borderRadius="8px"
+              fontSize={{ base: "13px", md: "14px" }}
+              fontWeight="700"
+              leftIcon={<Icon as={FaWhatsapp} boxSize="19px" />}
+              _hover={{ opacity: 0.9, transform: "translateY(-2px)" }}
+              transition="all 0.2s ease"
+            >
+              CHAT ON WHATSAPP
+            </Button>
+          </Flex>
+        </Box>
+      </Section>
+    </Flex>
   );
 };
 

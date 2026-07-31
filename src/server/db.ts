@@ -47,11 +47,17 @@ export const ensureSchema = (): Promise<void> => {
           created_at BIGINT NOT NULL,
           updated_at BIGINT NOT NULL
         )`;
+      await query`ALTER TABLE orders ADD COLUMN IF NOT EXISTS customer_city TEXT NOT NULL DEFAULT ''`;
       await query`
         CREATE TABLE IF NOT EXISTS images (
           id TEXT PRIMARY KEY,
           mime TEXT NOT NULL,
           data BYTEA NOT NULL,
+          created_at BIGINT NOT NULL
+        )`;
+      await query`
+        CREATE TABLE IF NOT EXISTS subscribers (
+          email TEXT PRIMARY KEY,
           created_at BIGINT NOT NULL
         )`;
     })().catch((error) => {

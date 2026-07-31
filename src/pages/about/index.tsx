@@ -1,19 +1,11 @@
 import * as React from "react";
 import Layout from "@/components/layout";
 import { Flex, Image, SimpleGrid, Text } from "@chakra-ui/react";
-import { Oswald, Montserrat } from "@next/font/google";
 
-const oswald = Oswald({
-  weight: ["500"],
-  style: ["normal"],
-  subsets: ["latin"],
-});
 
-const montserrat = Montserrat({
-  weight: ["400"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-});
+
+
+
 
 const ACCENT = "#2563eb";
 
@@ -22,31 +14,24 @@ import Seo from "@/components/Seo";
 export const About = () => {
   const productImages = [
     {
-      src: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&w=392&h=432&q=70",
-      alt: "industrial belts",
+      src: "https://images.unsplash.com/photo-1610891015188-5369212db097?auto=format&fit=crop&w=392&h=432&q=70",
+      alt: "industrial machinery and belts",
     },
     {
-      src: "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=392&h=432&q=70",
-      alt: "machine parts",
+      src: "https://images.unsplash.com/photo-1776671236324-d9b94d727f25?auto=format&fit=crop&w=392&h=432&q=70",
+      alt: "mechanical components in stock",
     },
     {
-      src: "https://images.unsplash.com/photo-1504328345606-18aa54129790?auto=format&fit=crop&w=392&h=432&q=70",
-      alt: "heavy equipment",
+      src: "https://images.unsplash.com/photo-1628645419184-26a1f2757340?auto=format&fit=crop&w=392&h=432&q=70",
+      alt: "heavy equipment on site",
     },
-  ];
-
-  const stats = [
-    { value: "15+", label: "Years in the trade" },
-    { value: "12,000+", label: "Parts in stock" },
-    { value: "40+", label: "Trusted brands" },
-    { value: "98%", label: "Orders shipped same day" },
   ];
 
   return (
     <Layout>
       <Seo
         title='About Us'
-        description='Best Qualities Industrial Equipment Nig Ltd supplies belts, bearings, seals, excavator parts and vehicle parts across Nigeria. 15+ years in the trade, 40+ trusted brands.'
+        description='Best Qualities Industrial Equipment Nig Ltd supplies belts, bearings, seals, excavator parts and vehicle parts across Nigeria.'
         path='/about'
       />
       <Flex
@@ -58,7 +43,7 @@ export const About = () => {
           lg: "1224px",
         }}
         alignItems="center"
-        className={montserrat.className}
+        className={"font-montserrat"}
         fontSize="16px"
         mt={{
           base: "120px",
@@ -76,7 +61,7 @@ export const About = () => {
       >
         <Text
           mb="20px"
-          className={oswald.className}
+          className={"font-oswald"}
           textTransform="uppercase"
           fontSize={{
             base: "28px",
@@ -129,33 +114,6 @@ export const About = () => {
             />
           ))}
         </Flex>
-        <SimpleGrid
-          columns={{ base: 2, lg: 4 }}
-          spacing="24px"
-          w="100%"
-          mb={{ base: "50px", lg: "90px" }}
-        >
-          {stats.map((stat) => (
-            <Flex
-              key={stat.label}
-              flexDir="column"
-              alignItems="center"
-              p="28px"
-              border="1px solid #e8e8e8"
-            >
-              <Text
-                className={oswald.className}
-                fontSize={{ base: "28px", lg: "36px" }}
-                color={ACCENT}
-              >
-                {stat.value}
-              </Text>
-              <Text fontSize="14px" color="#5a5a5a" textAlign="center">
-                {stat.label}
-              </Text>
-            </Flex>
-          ))}
-        </SimpleGrid>
         <Flex
           flexDir="column"
           width={{
@@ -166,9 +124,8 @@ export const About = () => {
           <Text mb="30px">
             Our mission is simple: take the guesswork and the risk out of
             buying industrial equipment and vehicle parts online. Every
-            product we list is quality-checked before it ships, sourced
-            directly from trusted suppliers, and covered by a minimum
-            12-month warranty. From belts, chains and bearings to excavator
+            product we list is quality-checked before it ships, and sourced
+            directly from trusted suppliers. From belts, chains and bearings to excavator
             buckets, hydraulic seals and car care products, we stock what
             keeps your machines and vehicles running.
           </Text>
@@ -193,7 +150,7 @@ export const About = () => {
             you spend a cent.
           </Text>
           <Flex
-            className={oswald.className}
+            className={"font-oswald"}
             fontSize="22px"
             flexDir="column"
             alignItems="flex-end"
