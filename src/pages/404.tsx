@@ -1,5 +1,7 @@
-import { Box, Button, Flex, Input, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Input, Text, SimpleGrid, Icon } from '@chakra-ui/react';
 import Layout from '@/components/layout';
+import Link from 'next/link';
+import { BsArrowRight } from 'react-icons/bs';
 
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -47,6 +49,7 @@ export default function Custom404() {
         <Box as="form" onSubmit={handleSearch} w="100%" maxW="400px" mb="30px">
           <Flex gap="10px">
             <Input
+              aria-label="Search for parts"
               placeholder="Search for parts..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -69,6 +72,36 @@ export default function Custom404() {
         >
           Browse all parts →
         </Button>
+
+        <Box mt="60px" w="100%" maxW="600px" textAlign="left">
+          <Text fontSize="14px" fontWeight="bold" color="#94a3b8" textTransform="uppercase" letterSpacing="1px" mb="20px" textAlign="center">
+            Popular Categories
+          </Text>
+          <SimpleGrid columns={{ base: 1, sm: 3 }} spacing="16px">
+            {[
+              { name: 'Belts', href: '/store?category=belts' },
+              { name: 'Bearings', href: '/store?category=bearings' },
+              { name: 'Seals & Gaskets', href: '/store?category=sealsGaskets' },
+            ].map(cat => (
+              <Link href={cat.href} key={cat.name}>
+                <Flex 
+                  alignItems="center" 
+                  justifyContent="space-between" 
+                  p="16px" 
+                  bg="#f8fafc" 
+                  borderRadius="8px" 
+                  border="1px solid #e2e8f0"
+                  color="#0f172a"
+                  _hover={{ borderColor: ACCENT, color: ACCENT, bg: 'white', boxShadow: 'sm', transform: 'translateY(-2px)' }}
+                  transition="all 0.2s"
+                >
+                  <Text fontSize="14px" fontWeight="600">{cat.name}</Text>
+                  <Icon as={BsArrowRight} />
+                </Flex>
+              </Link>
+            ))}
+          </SimpleGrid>
+        </Box>
       </Flex>
     </Layout>
   );

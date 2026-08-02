@@ -14,6 +14,8 @@ export default function Document() {
           href='https://fonts.gstatic.com'
           crossOrigin='anonymous'
         />
+        <link rel='preconnect' href='https://images.unsplash.com' />
+        <link rel='preload' as='image' href='https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=1920&q=75' />
         <link
           href='https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;1,400&family=Oswald:wght@500;600&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap'
           rel='stylesheet'

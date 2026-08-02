@@ -47,6 +47,7 @@ export const ProductTile = ({ item }: ProductTileProps) => {
           w='100%'
           objectFit='cover'
           loading='lazy'
+          decoding='async'
           fallbackSrc='/placeholder-part.svg'
           bg='#f7f7f7'
         />

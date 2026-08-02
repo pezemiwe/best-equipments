@@ -150,6 +150,7 @@ export const Footer = () => {
               <InputGroup flex='1'>
                 <Input
                   type='email'
+                  aria-label='Email address for newsletter'
                   height='50px'
                   bg='#0f172a'
                   borderRadius='8px'

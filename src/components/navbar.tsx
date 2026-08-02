@@ -69,6 +69,7 @@ export default function Navbar({ navChange }: NavbarProps) {
   return (
     <>
       <Flex
+        as='header'
         w='100%'
         py='5'
         alignItems='center'
@@ -154,9 +155,10 @@ export default function Navbar({ navChange }: NavbarProps) {
           </Box>
 
           <Flex
-            w={{ base: '60%', md: '70%', lg: 'auto' }}
+            as='nav'
+            w='auto'
             alignItems='center'
-            justifyContent='space-between'
+            justifyContent='flex-end'
             gap={{ base: '0', lg: '26px' }}>
             {paths.map((path) => (
               <Link href={path.path} key={path.name}>
@@ -209,6 +211,7 @@ export default function Navbar({ navChange }: NavbarProps) {
           </Flex>
         </Flex>
         <Flex
+          as='nav'
           display={{ base: 'flex', lg: 'none' }}
           opacity={showMenu ? '1' : '0'}
           h={showMenu ? 'auto' : '0'}

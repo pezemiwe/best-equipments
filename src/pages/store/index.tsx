@@ -31,6 +31,7 @@ import Seo from '@/components/Seo';
 import { useProducts } from '@/hooks/products';
 import { productTypes, categoryLabel } from '@/utils/cart';
 import { searchAndSort, sortOptions, SortOption } from '@/utils/search';
+import { SITE_NAME, SITE_URL } from '@/components/Seo';
 
 
 
@@ -330,6 +331,16 @@ export const Store = () => {
         title='Shop Vehicle Parts Online'
         description='Browse belts, bearings, chains, seals, excavator and drilling parts, and car care products from trusted brands. Naira prices, nationwide delivery.'
         path='/store'
+        jsonLd={{
+          '@type': 'CollectionPage',
+          name: 'Vehicle Parts Store',
+          description: 'Browse belts, bearings, chains, seals, excavator and drilling parts, and car care products from trusted brands.',
+          url: `${SITE_URL}/store`,
+          publisher: {
+            '@type': 'Organization',
+            name: SITE_NAME,
+          },
+        }}
       />
       <Layout>
         <Flex

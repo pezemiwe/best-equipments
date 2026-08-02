@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import Navbar from "./navbar";
 import Footer from "./footer";
 
@@ -31,7 +31,9 @@ export const Layout = ({ children }: LayoutProps) => {
       overflow="auto"
     >
       <Navbar navChange={navChange} />
-      {children}
+      <Box as="main" w="100%" flex="1">
+        {children}
+      </Box>
       <Footer />
     </Flex>
   );
