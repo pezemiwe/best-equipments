@@ -1,5 +1,12 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import '@/styles/globals.css';
+
+const theme = extendTheme({
+  config: {
+    initialColorMode: 'light',
+    useSystemColorMode: false,
+  }
+});
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
@@ -29,7 +36,7 @@ function App({ Component, pageProps }: AppProps) {
         <meta name='theme-color' content='#0f172a' />
       </Head>
       <AppProvider>
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
           <main className={"font-roboto"}>
             <Component {...pageProps} />
             <CookieBanner />
