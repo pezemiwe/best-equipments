@@ -35,6 +35,7 @@ export const ensureSchema = (): Promise<void> => {
           updated_at BIGINT NOT NULL
         )`;
       await query`ALTER TABLE products ADD COLUMN IF NOT EXISTS gallery JSONB NOT NULL DEFAULT '[]'`;
+      await query`ALTER TABLE products ADD COLUMN IF NOT EXISTS reviews JSONB NOT NULL DEFAULT '[]'`;
       await query`
         CREATE TABLE IF NOT EXISTS orders (
           id TEXT PRIMARY KEY,

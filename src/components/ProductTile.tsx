@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Badge, Flex, Image, Text } from '@chakra-ui/react';
+import { Box, Flex, Image, Text, Badge } from '@chakra-ui/react';
 import Link from 'next/link';
+import { AiFillStar } from 'react-icons/ai';
 
 const ACCENT = '#2563eb';
 
@@ -9,6 +10,11 @@ interface ProductTileProps {
 }
 
 export const ProductTile = ({ item }: ProductTileProps) => {
+  const hasReviews = item.reviews && item.reviews.length > 0;
+  const averageRating = hasReviews
+    ? item.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / item.reviews.length
+    : 0;
+
   return (
     <Link href='/store/[id]' as={`/store/${item.id}`}>
       <Flex
@@ -59,6 +65,14 @@ export const ProductTile = ({ item }: ProductTileProps) => {
             <Text fontSize='11px' color='#9a9a9a' mb='4px'>
               {item.brand}
             </Text>
+          )}
+          {hasReviews && (
+            <Flex alignItems='center' gap='4px' mb='4px'>
+              <AiFillStar color="#ecc94b" size="12px" />
+              <Text fontSize='11px' color='#7a7a7a'>
+                {averageRating.toFixed(1)} ({item.reviews.length})
+              </Text>
+            </Flex>
           )}
           <Flex alignItems='baseline' gap='6px' mt='auto'>
             <Text fontSize='17px' fontWeight='bold' color='#0f172a'>

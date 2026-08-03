@@ -20,11 +20,11 @@ import {
   Select,
   SimpleGrid,
   Text,
-  Textarea,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { productTypes } from "@/utils/cart";
 import { ProductPayload } from "@/hooks/products";
+import { RichTextEditor } from "./RichTextEditor";
 
 const ACCENT = "#2563eb";
 
@@ -110,12 +110,9 @@ export const ProductFormModal = ({
         </SimpleGrid>
         <FormControl mb="16px">
           <FormLabel fontSize="14px">Description</FormLabel>
-          <Textarea
-            borderRadius="none"
-            focusBorderColor={ACCENT}
-            rows={3}
+          <RichTextEditor
             value={form.description || ""}
-            onChange={(e) => setForm("description", e.target.value)}
+            onChange={(val) => setForm("description", val)}
             placeholder="What the part does, what it fits, what is included..."
           />
         </FormControl>

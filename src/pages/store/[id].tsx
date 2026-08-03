@@ -2,15 +2,20 @@ import * as React from 'react';
 
 import {
   Badge,
+  Box,
   Button,
   Flex,
   Image,
+  Input,
   SimpleGrid,
   Skeleton,
   Text,
+  Textarea,
+  useToast,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout';
+import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 
 import { useProduct, useProducts } from '@/hooks/products';
 import { useAppContext } from '@/context';
@@ -18,10 +23,6 @@ import { categoryLabel } from '@/utils/cart';
 import ProductTile from '@/components/ProductTile';
 import { relatedProducts } from '@/utils/search';
 import Seo, { absoluteUrl, SITE_NAME, SITE_URL } from '@/components/Seo';
-
-
-
-
 
 const ACCENT = '#2563eb';
 
@@ -44,7 +45,8 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
   const router = useRouter();
   const { id } = router.query;
   const [num, setNum] = React.useState(1);
-  const { data: fetched, isLoading: fetchLoading } = useProduct(id as string);
+  const toast = useToast();
+  const { data: fetched, isLoading: fetchLoading, refetch } = useProduct(id as string);
   const product = fetched ?? initialProduct ?? undefined;
   const isLoading = fetchLoading && !product;
   const { addToCart, isInCart } = useAppContext();
@@ -69,6 +71,37 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
   };
 
   const info = product as any;
+  const [reviewForm, setReviewForm] = React.useState({ name: '', rating: 5, comment: '' });
+  const [submittingReview, setSubmittingReview] = React.useState(false);
+
+  const averageRating = React.useMemo(() => {
+    if (!info?.reviews || info.reviews.length === 0) return 0;
+    const sum = info.reviews.reduce((acc: number, r: any) => acc + r.rating, 0);
+    return sum / info.reviews.length;
+  }, [info]);
+
+  const submitReview = async () => {
+    if (!reviewForm.name || !reviewForm.comment) {
+      toast({ title: 'Please fill all fields', status: 'error' });
+      return;
+    }
+    setSubmittingReview(true);
+    try {
+      await fetch(`/api/products/${info?.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reviewForm),
+      });
+      toast({ title: 'Review submitted!', status: 'success' });
+      setReviewForm({ name: '', rating: 5, comment: '' });
+      refetch(); // Refetch product data to show new review
+    } catch (e) {
+      toast({ title: 'Failed to submit review', status: 'error' });
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
   const { data: allProducts, isLoading: relatedLoading } = useProducts();
   const related = relatedProducts(allProducts || [], info, 4);
 
@@ -255,6 +288,18 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
             mb='10px'>
             {info?.name}
           </Text>
+          {info?.reviews && info.reviews.length > 0 && (
+            <Flex alignItems='center' gap='5px' mb='10px'>
+              {Array.from({ length: 5 }).map((_, i) => (
+                i < Math.round(averageRating) 
+                  ? <AiFillStar key={i} color="#ecc94b" size="18px" /> 
+                  : <AiOutlineStar key={i} color="#cbd5e1" size="18px" />
+              ))}
+              <Text fontSize='13px' color='#7a7a7a'>
+                ({info.reviews.length} reviews)
+              </Text>
+            </Flex>
+          )}
           <Flex mb='10px' fontSize='14px' color='#7a7a7a' gap='16px'>
             {info?.brand && <Text>Brand: {info.brand}</Text>}
             {info?.sku && <Text>SKU: {info.sku}</Text>}
@@ -314,16 +359,95 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
             isDisabled={addedToCart}>
             {addedToCart ? 'ADDED TO CART' : 'ADD TO CART'}
           </Button>
-          <Text
-            w='100%'
-            mb='25px'
-            color='#5a5a5a'>
-            {info?.description ||
-              'Quality-checked before dispatch.'}
-          </Text>
+          {info?.description ? (
+            <Box
+              w='100%'
+              mb='25px'
+              color='#5a5a5a'
+              className='rich-text-content'
+              sx={{
+                'ul, ol': { paddingLeft: '1.5rem', marginBottom: '1rem' },
+                'h1, h2, h3': { color: '#0f172a', fontWeight: 'bold', marginY: '0.5rem' },
+                'p': { marginBottom: '0.5rem' },
+                'a': { color: '#2563eb', textDecoration: 'underline' }
+              }}
+              dangerouslySetInnerHTML={{ __html: info.description }}
+            />
+          ) : (
+            <Text
+              w='100%'
+              mb='25px'
+              color='#5a5a5a'>
+              Quality-checked before dispatch.
+            </Text>
+          )}
           <Flex flexDir='column' fontSize='14px' color='#5a5a5a' gap='4px'>
             <Text>✓ Quality-checked before dispatch</Text>
           </Flex>
+          
+          <Box mt='60px' w='100%' borderTop='1px solid #e4e5e7' pt='30px'>
+            <Text fontSize='20px' className="font-oswald" mb='20px'>Customer Reviews</Text>
+            
+            {(!info?.reviews || info.reviews.length === 0) ? (
+              <Text fontSize='14px' color='#7a7a7a' mb='30px'>No reviews yet. Be the first to review this product!</Text>
+            ) : (
+              <Flex flexDir='column' gap='20px' mb='30px'>
+                {info.reviews.map((rev: any, idx: number) => (
+                  <Box key={idx} p='20px' bg='white' border='1px solid #e4e5e7' borderRadius='8px'>
+                    <Flex justifyContent='space-between' alignItems='center' mb='10px'>
+                      <Text fontWeight='600'>{rev.name}</Text>
+                      <Text fontSize='12px' color='#9a9a9a'>{new Date(rev.date).toLocaleDateString()}</Text>
+                    </Flex>
+                    <Flex alignItems='center' gap='2px' mb='10px'>
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        i < rev.rating 
+                          ? <AiFillStar key={i} color="#ecc94b" size="14px" /> 
+                          : <AiOutlineStar key={i} color="#cbd5e1" size="14px" />
+                      ))}
+                    </Flex>
+                    <Text fontSize='14px' color='#5a5a5a'>{rev.comment}</Text>
+                  </Box>
+                ))}
+              </Flex>
+            )}
+
+            <Box p='20px' bg='#f8fafc' borderRadius='8px'>
+              <Text fontWeight='600' mb='15px'>Write a Review</Text>
+              <Flex flexDir='column' gap='15px'>
+                <Input 
+                  placeholder='Your Name' 
+                  bg='white' 
+                  value={reviewForm.name}
+                  onChange={(e) => setReviewForm({ ...reviewForm, name: e.target.value })}
+                />
+                <Flex alignItems='center' gap='10px'>
+                  <Text fontSize='14px'>Rating:</Text>
+                  <Flex gap='5px'>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Box key={i} cursor='pointer' onClick={() => setReviewForm({ ...reviewForm, rating: i + 1 })}>
+                        {i < reviewForm.rating ? <AiFillStar color="#ecc94b" size="20px" /> : <AiOutlineStar color="#cbd5e1" size="20px" />}
+                      </Box>
+                    ))}
+                  </Flex>
+                </Flex>
+                <Textarea 
+                  placeholder='Your Review' 
+                  bg='white' 
+                  rows={4}
+                  value={reviewForm.comment}
+                  onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                />
+                <Button 
+                  colorScheme='blue' 
+                  w='fit-content' 
+                  onClick={submitReview}
+                  isLoading={submittingReview}
+                >
+                  Submit Review
+                </Button>
+              </Flex>
+            </Box>
+          </Box>
         </Flex>
       </Flex>
       {(relatedLoading || related.length > 0) && (

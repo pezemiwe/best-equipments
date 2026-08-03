@@ -15,6 +15,7 @@ export type Product = {
   inStock: boolean;
   quantity: number;
   gallery: string[];
+  reviews?: { name: string; rating: number; comment: string; date: number }[];
   createdAt?: number;
   updatedAt?: number;
 };
@@ -111,6 +112,7 @@ const writeFileStore = async (products: Product[]) => {
 const rowToProduct = (row: any): Product => {
   const quantity = Number(row.quantity) || 0;
   let gallery: string[] = [];
+  let reviews: any[] = [];
   try {
     gallery =
       typeof row.gallery === 'string'
@@ -118,6 +120,14 @@ const rowToProduct = (row: any): Product => {
         : row.gallery || [];
   } catch {
     gallery = [];
+  }
+  try {
+    reviews =
+      typeof row.reviews === 'string'
+        ? JSON.parse(row.reviews)
+        : row.reviews || [];
+  } catch {
+    reviews = [];
   }
   return {
     id: row.id,
@@ -131,6 +141,7 @@ const rowToProduct = (row: any): Product => {
     quantity,
     inStock: quantity > 0,
     gallery,
+    reviews,
     createdAt: Number(row.created_at),
     updatedAt: Number(row.updated_at),
   };
@@ -266,6 +277,7 @@ export const createProduct = async (
     quantity,
     inStock: quantity > 0,
     gallery,
+    reviews: [],
     createdAt: now,
     updatedAt: now,
   };
@@ -273,10 +285,10 @@ export const createProduct = async (
   if (hasDatabase()) {
     await ensureDbReady();
     await sql()`
-      INSERT INTO products (id, name, amount, url, category, brand, description, sku, quantity, gallery, created_at, updated_at)
+      INSERT INTO products (id, name, amount, url, category, brand, description, sku, quantity, gallery, reviews, created_at, updated_at)
       VALUES (${product.id}, ${product.name}, ${product.amount}, ${product.url}, ${product.category},
               ${product.brand}, ${product.description}, ${product.sku}, ${product.quantity},
-              ${JSON.stringify(product.gallery)}, ${product.createdAt}, ${product.updatedAt})`;
+              ${JSON.stringify(product.gallery)}, '[]', ${product.createdAt}, ${product.updatedAt})`;
   } else {
     const products = await readFileStore();
     products.unshift(product);
@@ -320,6 +332,7 @@ export const updateProduct = async (
         category = ${updated.category}, brand = ${updated.brand},
         description = ${updated.description}, sku = ${updated.sku},
         quantity = ${updated.quantity}, gallery = ${JSON.stringify(updated.gallery)},
+        reviews = ${JSON.stringify(updated.reviews || [])},
         updated_at = ${updated.updatedAt}
       WHERE id = ${id}`;
   } else {
@@ -379,4 +392,28 @@ export const deleteProducts = async (ids: string[]): Promise<number> => {
   const removed = products.length - filtered.length;
   if (removed > 0) await writeFileStore(filtered);
   return removed;
+};
+
+export const addReview = async (
+  id: string,
+  review: { name: string; rating: number; comment: string; date: number }
+): Promise<Product | null> => {
+  const existing = await getProduct(id);
+  if (!existing) return null;
+  const reviews = [...(existing.reviews || []), review];
+  const updated: Product = { ...existing, reviews };
+
+  if (hasDatabase()) {
+    await ensureDbReady();
+    await sql()`
+      UPDATE products SET
+        reviews = ${JSON.stringify(reviews)}
+      WHERE id = ${id}`;
+  } else {
+    const products = await readFileStore();
+    const index = products.findIndex((product) => product.id === id);
+    products[index] = updated;
+    await writeFileStore(products);
+  }
+  return updated;
 };
