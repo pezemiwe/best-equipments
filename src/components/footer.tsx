@@ -109,7 +109,7 @@ export const Footer = () => {
         justifyContent='center'
         px={{ base: '16px', md: '24px', lg: '32px' }}
       >
-        <Flex flexDir='column' w='100%' maxW='1280px'>
+        <Flex flexDir='column' w='100%' maxW='1280px' mx='auto'>
           {/* ---------------- Newsletter bar ---------------- */}
           <Flex
             mt={{ base: '48px', md: '64px' }}

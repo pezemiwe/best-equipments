@@ -454,7 +454,7 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
       {(relatedLoading || related.length > 0) && (
         <Flex
           w='100%'
-          maxWidth='1224px'
+          maxWidth='1224px' mx='auto'
           flexDir='column'
           className={"font-montserrat"}
           px={{ base: '16px', lg: '0px' }}

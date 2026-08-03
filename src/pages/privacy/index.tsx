@@ -41,7 +41,7 @@ export default function Privacy() {
       />
       <Flex
         w='100%'
-        maxWidth='800px'
+        maxWidth='800px' mx='auto'
         px={{ base: '16px', lg: '0px' }}
         flexDir='column'
         color='#2e2e2e'

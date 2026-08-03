@@ -62,6 +62,7 @@ export const Contact = () => {
           md: "450px",
           lg: "1224px",
         }}
+        mx="auto"
         justifyContent="space-between"
         className={"font-montserrat"}
         fontSize="16px"

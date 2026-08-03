@@ -12,7 +12,7 @@ export const Section = ({ children, ...rest }: any) => (
     px={{ base: "16px", md: "24px", lg: "32px" }}
     {...rest}
   >
-    <Flex flexDir="column" w="100%" maxW="1280px">
+    <Flex flexDir="column" w="100%" maxW="1280px" mx="auto">
       {children}
     </Flex>
   </Flex>

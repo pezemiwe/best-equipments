@@ -77,6 +77,7 @@ export const Faq = () => {
           base: "16px",
           lg: "0px",
         }}
+        mx="auto"
         flexDir="column"
         alignItems="center"
         color="#2e2e2e"

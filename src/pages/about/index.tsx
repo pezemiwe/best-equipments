@@ -42,6 +42,7 @@ export const About = () => {
           md: "450px",
           lg: "1224px",
         }}
+        mx="auto"
         alignItems="center"
         className={"font-montserrat"}
         fontSize="16px"
