@@ -172,6 +172,7 @@ export const SingleProduct = ({ initialProduct }: { initialProduct?: any }) => {
       <Flex
         w='100%'
         maxWidth='1224px'
+        mx='auto'
         color='#2e2e2e'
         fontSize='16px'
         mt={{
