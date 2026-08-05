@@ -3,7 +3,6 @@ import { Flex } from "@chakra-ui/react";
 import { useProducts } from "@/hooks/products";
 
 import { HeroSection } from "./home/HeroSection";
-import { FeaturesSection } from "./home/FeaturesSection";
 import { CategoryGrid } from "./home/CategoryGrid";
 import { FeaturedProducts } from "./home/FeaturedProducts";
 import { WhyUsSection } from "./home/WhyUsSection";
@@ -31,7 +30,6 @@ export const Home = () => {
       overflowX="hidden"
     >
       <HeroSection />
-      <FeaturesSection />
       <CategoryGrid categoryCounts={categoryCounts} />
       <FeaturedProducts productsLoading={productsLoading} featured={featured} />
       <WhyUsSection />

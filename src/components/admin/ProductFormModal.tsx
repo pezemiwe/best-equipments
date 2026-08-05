@@ -22,7 +22,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { productTypes } from "@/utils/cart";
 import { ProductPayload } from "@/hooks/products";
 import { RichTextEditor } from "./RichTextEditor";
 
@@ -40,6 +39,7 @@ export const ProductFormModal = ({
   onGalleryFiles,
   save,
   isSaving,
+  categories,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -52,6 +52,7 @@ export const ProductFormModal = ({
   onGalleryFiles: (files: FileList | null) => void;
   save: () => void;
   isSaving: boolean;
+  categories: any[];
 }) => (
   <Modal isOpen={isOpen} onClose={onClose} size="xl">
     <ModalOverlay />
@@ -100,12 +101,49 @@ export const ProductFormModal = ({
               value={form.category}
               onChange={(e) => setForm("category", e.target.value)}
             >
-              {productTypes.map((type: any) => (
+              {categories.map((type: any) => (
                 <option value={type.value} key={type.value}>
                   {type.name}
                 </option>
               ))}
             </Select>
+          </FormControl>
+        </SimpleGrid>
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing="16px" mb="16px">
+          <FormControl>
+            <FormLabel fontSize="14px">Discount Price (₦)</FormLabel>
+            <NumberInput
+              min={0}
+              value={form.discountPrice ?? ""}
+              onChange={(value) => setForm("discountPrice", value ? Number(value) : undefined)}
+            >
+              <NumberInputField borderRadius="none" placeholder="0.00" />
+            </NumberInput>
+            <Text fontSize="12px" color="gray.500" mt="4px">
+              Optional. Set to put product on sale.
+            </Text>
+          </FormControl>
+          <FormControl>
+            <FormLabel fontSize="14px">Discount End Date</FormLabel>
+            <Input
+              type="datetime-local"
+              borderRadius="none"
+              focusBorderColor={ACCENT}
+              value={
+                form.discountEnd
+                  ? new Date(form.discountEnd - new Date().getTimezoneOffset() * 60000)
+                      .toISOString()
+                      .slice(0, 16)
+                  : ""
+              }
+              onChange={(e) => {
+                const val = e.target.value;
+                setForm("discountEnd", val ? new Date(val).getTime() : undefined);
+              }}
+            />
+            <Text fontSize="12px" color="gray.500" mt="4px">
+              Optional. Discount automatically expires.
+            </Text>
           </FormControl>
         </SimpleGrid>
         <FormControl mb="16px">

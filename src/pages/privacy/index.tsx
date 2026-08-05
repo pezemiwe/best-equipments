@@ -27,7 +27,7 @@ const sections = [
   },
   {
     title: 'Your choices',
-    body: 'You can clear your cart and stored preferences at any time by clearing your browser data for this site. To ask about, correct or delete information we hold about you, email support@bestqualities.ng or call +234 816 230 9761.',
+    body: 'You can clear your cart and stored preferences at any time by clearing your browser data for this site. To ask about, correct or delete information we hold about you, email support@bestqualities.ng or call +234 810 344 7856.',
   },
 ];
 

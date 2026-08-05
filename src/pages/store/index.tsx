@@ -29,7 +29,7 @@ import MobileFilter from '@/components/mobileFilter';
 import ProductTile from '@/components/ProductTile';
 import Seo from '@/components/Seo';
 import { useProducts } from '@/hooks/products';
-import { productTypes, categoryLabel } from '@/utils/cart';
+import { useCategories } from '@/hooks/categories';
 import { searchAndSort, sortOptions, SortOption } from '@/utils/search';
 import { SITE_NAME, SITE_URL } from '@/components/Seo';
 
@@ -50,6 +50,7 @@ export interface StoreFilters {
   maxPrice: number;
   categoryCounts: Record<string, number>;
   brandOptions: { name: string; count: number }[];
+  categoryOptions: any[];
   toggleCategory: (value: string) => void;
   toggleBrand: (value: string) => void;
   setPriceRange: (range: [number, number] | null) => void;
@@ -70,7 +71,7 @@ export const FilterPanel = ({ filters }: { filters: StoreFilters }) => {
         Category
       </Text>
       <Flex flexDir='column' mb='24px'>
-        {productTypes.map((type: any) => (
+        {filters.categoryOptions.map((type: any) => (
           <Checkbox
             key={type.value}
             mb='8px'
@@ -171,6 +172,8 @@ export const FilterPanel = ({ filters }: { filters: StoreFilters }) => {
 export const Store = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: products, isLoading } = useProducts();
+  const { data: catData } = useCategories();
+  const categoryOptions = catData || [];
   const router = useRouter();
 
   const [search, setSearch] = React.useState('');
@@ -274,6 +277,7 @@ export const Store = () => {
     maxPrice,
     categoryCounts,
     brandOptions,
+    categoryOptions,
     toggleCategory,
     toggleBrand,
     setPriceRange,
@@ -302,10 +306,13 @@ export const Store = () => {
     ...(search
       ? [{ label: `"${search}"`, onRemove: () => setSearch('') }]
       : []),
-    ...categories.map((value) => ({
-      label: categoryLabel(value),
-      onRemove: () => toggleCategory(value),
-    })),
+    ...categories.map((value) => {
+      const found = categoryOptions.find((c: any) => c.value === value);
+      return {
+        label: found ? found.name : value,
+        onRemove: () => toggleCategory(value),
+      };
+    }),
     ...brands.map((value) => ({
       label: value,
       onRemove: () => toggleBrand(value),

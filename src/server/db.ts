@@ -36,6 +36,17 @@ export const ensureSchema = (): Promise<void> => {
         )`;
       await query`ALTER TABLE products ADD COLUMN IF NOT EXISTS gallery JSONB NOT NULL DEFAULT '[]'`;
       await query`ALTER TABLE products ADD COLUMN IF NOT EXISTS reviews JSONB NOT NULL DEFAULT '[]'`;
+      await query`ALTER TABLE products ADD COLUMN IF NOT EXISTS discount_price NUMERIC`;
+      await query`ALTER TABLE products ADD COLUMN IF NOT EXISTS discount_end BIGINT`;
+      await query`
+        CREATE TABLE IF NOT EXISTS categories (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          value TEXT NOT NULL UNIQUE,
+          image TEXT NOT NULL DEFAULT '',
+          created_at BIGINT NOT NULL,
+          updated_at BIGINT NOT NULL
+        )`;
       await query`
         CREATE TABLE IF NOT EXISTS orders (
           id TEXT PRIMARY KEY,

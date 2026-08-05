@@ -14,7 +14,7 @@ export default function HomePage() {
             url: SITE_URL,
             description:
               "Industrial equipment and vehicle parts in Nigeria: belts, bearings, seals, excavator parts and car care products, with fast nationwide delivery.",
-            telephone: "+2348162309761",
+            telephone: "+2348103447856",
             currenciesAccepted: "NGN",
             address: {
               "@type": "PostalAddress",

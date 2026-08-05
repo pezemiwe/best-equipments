@@ -56,59 +56,7 @@ export const sizeMap = {
   xxl: "Extra extra large",
 } as any;
 
-export const productTypes = [
-  {
-    name: "Belts",
-    value: "belts",
-    // Conveyor Belts, PVC Belt, Fan Belts, Timing Belt
-  },
-  {
-    name: "Chains & Sprockets",
-    value: "chainsSprockets",
-    // Chain, Sprockets, Chain Link
-  },
-  {
-    name: "Power Transmission",
-    value: "powerTransmission",
-    // Coupling, Pulley, TaperLock
-  },
-  {
-    name: "Bearings",
-    value: "bearings",
-    // Bearing, Sleeve, Bearing Housing
-  },
-  {
-    name: "Seals & Gaskets",
-    value: "sealsGaskets",
-    // Oil Seal, Hydraulic Seal, Mechanical Seal, Gasket, Gland Packing
-  },
-  {
-    name: "Excavator & Drilling Parts",
-    value: "excavatorDrilling",
-    // Caterpillar Bucket, Bucket Teeth, Hydraulic Chisel, Drilling Bit,
-    // Extension Rod, Shank Adapter
-  },
-  {
-    name: "Fasteners & Adhesives",
-    value: "fastenersAdhesives",
-    // Fastener, Gum
-  },
-  {
-    name: "Industrial Supplies",
-    value: "industrialSupplies",
-    // Exhaust Wrapper, Fibre Glass, Grease, Battery
-  },
-  {
-    name: "Car Care Products",
-    value: "carCare",
-    // Tyre Polish, Wash & Wax, Dashboard Cleaner, Glass Cleaner
-  },
-] as any;
 
-export const categoryLabel = (value: string) => {
-  const found = productTypes.find((t: any) => t.value === value);
-  return found ? found.name : value;
-};
 
 export const priceRanges = [
   { label: "Under ₦25,000", min: 0, max: 25000 },
@@ -117,14 +65,6 @@ export const priceRanges = [
   { label: "₦120,000 - ₦250,000", min: 120000, max: 250000 },
   { label: "₦250,000 & above", min: 250000, max: Infinity },
 ];
-
-export const allProductTypes = productTypes.reduce(
-  (acc: any, { value }: any) => {
-    acc.push(value);
-    return acc;
-  },
-  []
-);
 
 export const allGenderTypes = ["All", "Male", "Female"];
 

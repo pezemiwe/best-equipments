@@ -16,6 +16,8 @@ export type Product = {
   quantity: number;
   gallery: string[];
   reviews?: { name: string; rating: number; comment: string; date: number }[];
+  discountPrice?: number;
+  discountEnd?: number;
   createdAt?: number;
   updatedAt?: number;
 };
@@ -142,6 +144,8 @@ const rowToProduct = (row: any): Product => {
     inStock: quantity > 0,
     gallery,
     reviews,
+    discountPrice: row.discount_price ? Number(row.discount_price) : undefined,
+    discountEnd: row.discount_end ? Number(row.discount_end) : undefined,
     createdAt: Number(row.created_at),
     updatedAt: Number(row.updated_at),
   };
@@ -156,10 +160,10 @@ const ensureDbReady = async () => {
     if (count === 0 && process.env.SEED_DEMO_DATA === 'true') {
       for (const product of seedProducts()) {
         await query`
-          INSERT INTO products (id, name, amount, url, category, brand, description, sku, quantity, gallery, created_at, updated_at)
+          INSERT INTO products (id, name, amount, url, category, brand, description, sku, quantity, gallery, created_at, updated_at, discount_price, discount_end)
           VALUES (${product.id}, ${product.name}, ${product.amount}, ${product.url}, ${product.category},
                   ${product.brand}, ${product.description}, ${product.sku}, ${product.quantity},
-                  ${JSON.stringify(product.gallery)}, ${product.createdAt}, ${product.updatedAt})
+                  ${JSON.stringify(product.gallery)}, ${product.createdAt}, ${product.updatedAt}, ${product.discountPrice ?? null}, ${product.discountEnd ?? null})
           ON CONFLICT (id) DO NOTHING`;
       }
     }
@@ -278,6 +282,8 @@ export const createProduct = async (
     inStock: quantity > 0,
     gallery,
     reviews: [],
+    discountPrice: input.discountPrice ? Number(input.discountPrice) : undefined,
+    discountEnd: input.discountEnd ? Number(input.discountEnd) : undefined,
     createdAt: now,
     updatedAt: now,
   };
@@ -285,10 +291,11 @@ export const createProduct = async (
   if (hasDatabase()) {
     await ensureDbReady();
     await sql()`
-      INSERT INTO products (id, name, amount, url, category, brand, description, sku, quantity, gallery, reviews, created_at, updated_at)
+      INSERT INTO products (id, name, amount, url, category, brand, description, sku, quantity, gallery, reviews, created_at, updated_at, discount_price, discount_end)
       VALUES (${product.id}, ${product.name}, ${product.amount}, ${product.url}, ${product.category},
               ${product.brand}, ${product.description}, ${product.sku}, ${product.quantity},
-              ${JSON.stringify(product.gallery)}, '[]', ${product.createdAt}, ${product.updatedAt})`;
+              ${JSON.stringify(product.gallery)}, '[]', ${product.createdAt}, ${product.updatedAt},
+              ${product.discountPrice ?? null}, ${product.discountEnd ?? null})`;
   } else {
     const products = await readFileStore();
     products.unshift(product);
@@ -321,6 +328,8 @@ export const updateProduct = async (
     quantity,
     inStock: quantity > 0,
     gallery,
+    discountPrice: input.discountPrice !== undefined ? (input.discountPrice ? Number(input.discountPrice) : undefined) : existing.discountPrice,
+    discountEnd: input.discountEnd !== undefined ? (input.discountEnd ? Number(input.discountEnd) : undefined) : existing.discountEnd,
     updatedAt: Date.now(),
   };
   delete (updated as any).image;
@@ -333,6 +342,7 @@ export const updateProduct = async (
         description = ${updated.description}, sku = ${updated.sku},
         quantity = ${updated.quantity}, gallery = ${JSON.stringify(updated.gallery)},
         reviews = ${JSON.stringify(updated.reviews || [])},
+        discount_price = ${updated.discountPrice ?? null}, discount_end = ${updated.discountEnd ?? null},
         updated_at = ${updated.updatedAt}
       WHERE id = ${id}`;
   } else {

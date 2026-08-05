@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Box, Flex, Image, Text, Badge } from '@chakra-ui/react';
 import Link from 'next/link';
 import { AiFillStar } from 'react-icons/ai';
+import { DiscountCountdown } from './DiscountCountdown';
 
 const ACCENT = '#2563eb';
 
@@ -14,6 +15,10 @@ export const ProductTile = ({ item }: ProductTileProps) => {
   const averageRating = hasReviews
     ? item.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / item.reviews.length
     : 0;
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+
+  const isDiscountActive = mounted && item.discountPrice && item.discountEnd && item.discountEnd > Date.now();
 
   return (
     <Link href='/store/[id]' as={`/store/${item.id}`}>
@@ -75,10 +80,24 @@ export const ProductTile = ({ item }: ProductTileProps) => {
             </Flex>
           )}
           <Flex alignItems='baseline' gap='6px' mt='auto'>
-            <Text fontSize='17px' fontWeight='bold' color='#0f172a'>
-              ₦{item.amount?.toLocaleString()}
-            </Text>
+            {isDiscountActive ? (
+              <>
+                <Text fontSize='17px' fontWeight='bold' color='#ea580c'>
+                  ₦{item.discountPrice.toLocaleString()}
+                </Text>
+                <Text fontSize='13px' color='#9a9a9a' textDecoration='line-through'>
+                  ₦{item.amount?.toLocaleString()}
+                </Text>
+              </>
+            ) : (
+              <Text fontSize='17px' fontWeight='bold' color='#0f172a'>
+                ₦{item.amount?.toLocaleString()}
+              </Text>
+            )}
           </Flex>
+          {isDiscountActive && (
+            <DiscountCountdown discountEnd={item.discountEnd} />
+          )}
         </Flex>
       </Flex>
     </Link>

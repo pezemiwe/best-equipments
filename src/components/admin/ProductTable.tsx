@@ -20,7 +20,6 @@ import {
   Skeleton,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon, SearchIcon } from "@chakra-ui/icons";
-import { categoryLabel } from "@/utils/cart";
 
 const ACCENT = "#2563eb";
 
@@ -37,6 +36,7 @@ export const ProductTable = ({
   openEdit,
   remove,
   isBulkDeleting,
+  categories,
 }: {
   isLoading: boolean;
   products: any[];
@@ -50,7 +50,14 @@ export const ProductTable = ({
   openEdit: (p: any) => void;
   remove: (p: any) => void;
   isBulkDeleting: boolean;
-}) => (
+  categories: any[];
+}) => {
+  const categoryLabel = (val: string) => {
+    const found = (categories || []).find((c: any) => c.value === val);
+    return found ? found.name : val;
+  };
+
+  return (
   <>
     <Flex
       mb="20px"
@@ -238,4 +245,5 @@ export const ProductTable = ({
       </TableContainer>
     )}
   </>
-);
+  );
+};

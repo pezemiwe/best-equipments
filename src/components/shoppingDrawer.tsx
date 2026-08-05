@@ -69,7 +69,7 @@ interface OrderResponse {
 const ACCENT = "#2563eb";
 const DARK = "#0f172a";
 // WhatsApp order number (international format, no leading 0 or +)
-const WHATSAPP_NUMBER = "2348162309761";
+const WHATSAPP_NUMBER = "2348103447856";
 
 export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
   const {
@@ -79,6 +79,7 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
     decrementQuantity,
     cartCount,
     totalCost,
+    getEffectivePrice,
   } = useAppContext();
 
   const router = useRouter();
@@ -175,7 +176,7 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
             `${index + 1}. ${item.name}${
               item.brand ? ` (${item.brand})` : ""
             } x${item.quantity} - ₦${(
-              item.amount * item.quantity
+              (item.discountPrice || item.amount) * item.quantity
             ).toLocaleString()}`,
         ),
         data.total,
@@ -184,9 +185,9 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
     } catch {
       openWhatsApp(
         (Object.values(cart) as CartItem[]).map(
-          (item: CartItem, index: number) =>
+          (item: any, index: number) =>
             `${index + 1}. ${item.name}${item.brand ? ` (${item.brand})` : ""} x${item.quantity} - ₦${(
-              item.amount * item.quantity
+              getEffectivePrice(item) * item.quantity
             ).toLocaleString()}`,
         ),
         totalCost,
@@ -314,9 +315,16 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
                         {item.brand}
                       </Text>
                     )}
-                    <Text fontSize="13px" color="#7a7a7a" mt="2px">
-                      ₦{item.amount?.toLocaleString()} each
-                    </Text>
+                    <Flex gap="6px" alignItems="baseline">
+                      <Text fontSize="13px" color="#ea580c" fontWeight={getEffectivePrice(item) < item.amount ? "bold" : "normal"}>
+                        ₦{getEffectivePrice(item)?.toLocaleString()} each
+                      </Text>
+                      {getEffectivePrice(item) < item.amount && (
+                        <Text fontSize="12px" color="#9a9a9a" textDecoration="line-through">
+                          ₦{item.amount?.toLocaleString()}
+                        </Text>
+                      )}
+                    </Flex>
                     <Flex
                       mt="8px"
                       alignItems="center"
@@ -345,7 +353,7 @@ export const ShoppingDrawer = ({ isOpen, onClose }: ShoppingDrawerProps) => {
                         />
                       </ButtonGroup>
                       <Text fontWeight="bold" fontSize="14px">
-                        ₦{(item.amount * item.quantity).toLocaleString()}
+                        ₦{(getEffectivePrice(item) * item.quantity).toLocaleString()}
                       </Text>
                     </Flex>
                   </Flex>

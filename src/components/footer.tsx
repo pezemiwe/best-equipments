@@ -29,7 +29,7 @@ import Link from 'next/link';
 
 const ACCENT = '#2563eb';
 const MUTED = '#94a3b8';
-const WHATSAPP = 'https://wa.me/2348162309761';
+const WHATSAPP = 'https://wa.me/2348103447856';
 
 const quickLinks = [
   { label: 'Shop products', href: '/store' },

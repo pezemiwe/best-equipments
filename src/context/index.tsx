@@ -17,6 +17,7 @@ interface IAppContext {
   totalCost: number;
   isInCart: (id: string) => boolean;
   clearCart: () => void;
+  getEffectivePrice: (item: any) => number;
 }
 
 interface IAppProvider {
@@ -35,6 +36,7 @@ export const AppContext = React.createContext<IAppContext>({
   isInCart: () => false,
   cartCount: 0,
   totalCost: 0,
+  getEffectivePrice: () => 0,
 });
 
 export const AppProvider: React.FC<IAppProvider> = ({ children }) => {
@@ -78,8 +80,15 @@ export const AppProvider: React.FC<IAppProvider> = ({ children }) => {
 
   const isInCart = (id: string) => !!cart[id];
 
+  const getEffectivePrice = (item: any) => {
+    if (item.discountPrice && item.discountEnd && item.discountEnd > Date.now()) {
+      return item.discountPrice;
+    }
+    return item.amount;
+  };
+
   const totalCost = Object.values(cart).reduce(
-    (acc, item) => acc + item.amount * item.quantity,
+    (acc, item) => acc + getEffectivePrice(item) * item.quantity,
     0
   );
 
@@ -109,6 +118,7 @@ export const AppProvider: React.FC<IAppProvider> = ({ children }) => {
         decrementQuantity,
         totalCost,
         clearCart,
+        getEffectivePrice,
       }}>
       {children}
     </AppContext.Provider>

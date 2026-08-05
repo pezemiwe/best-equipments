@@ -123,11 +123,15 @@ export const createOrder = async (input: {
         `Only ${product.quantity} of "${product.name}" left in stock`
       );
     }
+    const price = product.discountPrice && product.discountEnd && product.discountEnd > Date.now() 
+      ? product.discountPrice 
+      : product.amount;
+
     items.push({
       id: product.id,
       name: product.name,
       brand: product.brand,
-      amount: product.amount,
+      amount: price,
       quantity,
     });
   }

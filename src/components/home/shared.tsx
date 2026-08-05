@@ -3,7 +3,7 @@ import * as React from "react";
 
 export const ACCENT = "#2563eb";
 export const DARK = "#0f172a";
-export const WHATSAPP = "https://wa.me/2348162309761";
+export const WHATSAPP = "https://wa.me/2348103447856";
 
 export const Section = ({ children, ...rest }: any) => (
   <Flex

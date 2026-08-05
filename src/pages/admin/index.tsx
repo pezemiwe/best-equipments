@@ -26,6 +26,13 @@ import {
   useUpdateProduct,
   ProductPayload,
 } from '@/hooks/products';
+import {
+  useCategories,
+  useCreateCategory,
+  useUpdateCategory,
+  useDeleteCategory,
+  CategoryPayload,
+} from '@/hooks/categories';
 import Seo from '@/components/Seo';
 
 import { AdminLogin } from '@/components/admin/AdminLogin';
@@ -35,6 +42,8 @@ import { OrderTable } from '@/components/admin/OrderTable';
 import { ProductFormModal } from '@/components/admin/ProductFormModal';
 import { DeleteModal } from '@/components/admin/DeleteModal';
 import { AnalyticsDashboard } from '@/components/admin/AnalyticsDashboard';
+import { CategoryTable } from '@/components/admin/CategoryTable';
+import { CategoryFormModal } from '@/components/admin/CategoryFormModal';
 
 const ACCENT = '#2563eb';
 const DARK = '#0f172a';
@@ -73,6 +82,11 @@ export default function AdminPortal() {
   const { data: orders } = useAdminOrders(authed);
   const updateOrderStatus = useUpdateOrderStatus();
 
+  const { data: categories, isLoading: isCategoriesLoading } = useCategories();
+  const createCategory = useCreateCategory();
+  const updateCategory = useUpdateCategory();
+  const deleteCategory = useDeleteCategory();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [form, setFormState] = React.useState<ProductPayload>(emptyForm);
   const [editingId, setEditingId] = React.useState<string | null>(null);
@@ -81,6 +95,12 @@ export default function AdminPortal() {
   const [search, setSearch] = React.useState('');
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const [deleteTarget, setDeleteTarget] = React.useState<{ type: 'single'; product: any } | { type: 'bulk' } | null>(null);
+
+  const { isOpen: isCatOpen, onOpen: onCatOpen, onClose: onCatClose } = useDisclosure();
+  const [catForm, setCatFormState] = React.useState<CategoryPayload>({ name: '', value: '', image: '' });
+  const [editingCatId, setEditingCatId] = React.useState<string | null>(null);
+  const [catPreview, setCatPreview] = React.useState('');
+  const [catSearch, setCatSearch] = React.useState('');
 
   React.useEffect(() => {
     setAuthed(!!getAdminToken());
@@ -178,6 +198,66 @@ export default function AdminPortal() {
     }
   };
 
+  const setCatForm = (key: keyof CategoryPayload, value: any) =>
+    setCatFormState((prev) => ({ ...prev, [key]: value }));
+
+  const openCreateCat = () => {
+    setEditingCatId(null);
+    setCatFormState({ name: '', value: '', image: '' });
+    setCatPreview('');
+    onCatOpen();
+  };
+
+  const openEditCat = (cat: any) => {
+    setEditingCatId(cat.id);
+    setCatFormState({ name: cat.name, value: cat.value, image: cat.image });
+    setCatPreview(cat.image || '');
+    onCatOpen();
+  };
+
+  const onCatFile = async (file?: File | null) => {
+    if (!file) return;
+    if (file.size > 4 * 1024 * 1024) {
+      return toast({ title: 'Image must be under 4MB', status: 'error' });
+    }
+    const dataUrl = await readFileAsDataUrl(file);
+    setCatForm('fileImage', dataUrl);
+    setCatPreview(dataUrl);
+  };
+
+  const saveCat = async () => {
+    if (!catForm.name) {
+      return toast({ title: 'Name is required', status: 'error' });
+    }
+    try {
+      if (editingCatId) {
+        await updateCategory.mutateAsync({ ...catForm, id: editingCatId });
+        toast({ title: 'Category updated', status: 'success' });
+      } else {
+        await createCategory.mutateAsync(catForm);
+        toast({ title: 'Category created', status: 'success' });
+      }
+      onCatClose();
+    } catch (error: any) {
+      toast({
+        title: 'Save failed',
+        description: error?.response?.data?.error || error.message,
+        status: 'error',
+      });
+    }
+  };
+
+  const removeCat = async (cat: any) => {
+    if (window.confirm(`Are you sure you want to delete ${cat.name}?`)) {
+      try {
+        await deleteCategory.mutateAsync(cat.id);
+        toast({ title: 'Category deleted', status: 'success' });
+      } catch (error: any) {
+        toast({ title: 'Delete failed', status: 'error' });
+      }
+    }
+  };
+
   const remove = (product: any) => {
     setDeleteTarget({ type: 'single', product });
   };
@@ -251,6 +331,10 @@ export default function AdminPortal() {
     0
   );
 
+  const filteredCats = (categories || []).filter((c: any) =>
+    `${c.name} ${c.value}`.toLowerCase().includes(catSearch.toLowerCase())
+  );
+
   return (
     <Box minH='100vh' bg='#f4f5f7' className={"font-montserrat"} pb='60px'>
       <Seo title='Admin Portal' path='/admin' noIndex />
@@ -314,6 +398,7 @@ export default function AdminPortal() {
           <TabList mb='20px'>
             <Tab fontWeight='600'>Overview</Tab>
             <Tab fontWeight='600'>Products</Tab>
+            <Tab fontWeight='600'>Categories</Tab>
             <Tab fontWeight='600'>
               Orders
               {pendingCount > 0 && (
@@ -332,6 +417,7 @@ export default function AdminPortal() {
               <ProductTable
                 isLoading={isLoading}
                 products={products || []}
+                categories={categories || []}
                 filtered={filtered}
                 search={search}
                 setSearch={setSearch}
@@ -342,6 +428,19 @@ export default function AdminPortal() {
                 openEdit={openEdit}
                 remove={remove}
                 isBulkDeleting={bulkDeleteProducts.isLoading}
+              />
+            </TabPanel>
+
+            <TabPanel p='0'>
+              <CategoryTable
+                isLoading={isCategoriesLoading}
+                categories={categories || []}
+                filtered={filteredCats}
+                search={catSearch}
+                setSearch={setCatSearch}
+                openCreate={openCreateCat}
+                openEdit={openEditCat}
+                remove={removeCat}
               />
             </TabPanel>
 
@@ -368,6 +467,20 @@ export default function AdminPortal() {
         onGalleryFiles={onGalleryFiles}
         save={save}
         isSaving={createProduct.isLoading || updateProduct.isLoading}
+        categories={categories || []}
+      />
+
+      <CategoryFormModal
+        isOpen={isCatOpen}
+        onClose={onCatClose}
+        editingId={editingCatId}
+        form={catForm}
+        setForm={setCatForm}
+        preview={catPreview}
+        setPreview={setCatPreview}
+        onFile={onCatFile}
+        save={saveCat}
+        isSaving={createCategory.isLoading || updateCategory.isLoading}
       />
 
       <DeleteModal

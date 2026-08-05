@@ -1,33 +1,23 @@
-import { Box, Flex, Grid, GridItem, Icon, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, GridItem, Icon, Image, Text, Skeleton } from "@chakra-ui/react";
 import Link from "next/link";
 import * as React from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { productTypes } from "@/utils/cart";
+import { useCategories } from "@/hooks/categories";
 import { ACCENT, DARK, Section, SectionHeading } from "./shared";
 
-const categoryImages: Record<string, string> = {
-  belts:
-    "https://images.unsplash.com/photo-1610891015188-5369212db097?auto=format&fit=crop&w=900&q=70",
-  chainsSprockets:
-    "https://images.unsplash.com/photo-1488272690691-2636704d6000?auto=format&fit=crop&w=900&q=70",
-  powerTransmission:
-    "https://images.unsplash.com/photo-1567093322102-6bdd32fba67d?auto=format&fit=crop&w=900&q=70",
-  bearings:
-    "https://images.unsplash.com/photo-1776671236324-d9b94d727f25?auto=format&fit=crop&w=900&q=70",
-  sealsGaskets:
-    "https://images.unsplash.com/photo-1699466622736-36c7b7893745?auto=format&fit=crop&w=900&q=70",
-  excavatorDrilling:
-    "https://images.unsplash.com/photo-1628645419184-26a1f2757340?auto=format&fit=crop&w=900&q=70",
-  fastenersAdhesives:
-    "https://images.unsplash.com/photo-1564226591723-659ff3852b2a?auto=format&fit=crop&w=900&q=70",
-  industrialSupplies:
-    "https://images.unsplash.com/photo-1567016958860-87d898933af1?auto=format&fit=crop&w=900&q=70",
-  carCare:
-    "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=900&q=70",
-};
-
 export const CategoryGrid = ({ categoryCounts }: { categoryCounts: Record<string, number> }) => {
+  const { data: categories, isLoading } = useCategories();
   const wideIndexes = [0, 5, 8];
+
+  if (isLoading) {
+    return (
+      <Section mt={{ base: "60px", md: "90px", lg: "110px" }}>
+        <Skeleton height="300px" borderRadius="12px" />
+      </Section>
+    );
+  }
+
+  const items = categories || [];
 
   return (
     <Section mt={{ base: "60px", md: "90px", lg: "110px" }}>
@@ -45,14 +35,14 @@ export const CategoryGrid = ({ categoryCounts }: { categoryCounts: Record<string
         gap={{ base: "10px", md: "16px" }}
         w="100%"
       >
-        {productTypes.map((type: any, index: number) => {
+        {items.map((type: any, index: number) => {
           const isWide = wideIndexes.includes(index);
-          const count = categoryCounts[type.value];
+          const count = categoryCounts[type.value] || 0;
           return (
             <GridItem
-              key={type.value}
+              key={type.id || type.value}
               colSpan={{
-                base: index === productTypes.length - 1 ? 2 : 1,
+                base: index === items.length - 1 && items.length % 2 !== 0 ? 2 : 1,
                 md: 1,
                 lg: isWide ? 2 : 1,
               }}
@@ -68,7 +58,7 @@ export const CategoryGrid = ({ categoryCounts }: { categoryCounts: Record<string
                   bg={DARK}
                 >
                   <Image
-                    src={categoryImages[type.value]}
+                    src={type.image}
                     alt={type.name}
                     w="100%"
                     h="100%"
