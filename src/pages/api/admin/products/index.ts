@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { requireAdmin } from '@/server/adminAuth';
 import { createProduct, listProducts } from '@/server/productStore';
+import { listCategories } from '@/server/categoryStore';
 
 export const config = {
   api: {
@@ -23,6 +24,15 @@ export default async function handler(
       const { name, amount } = req.body || {};
       if (!name || !amount) {
         return res.status(400).json({ error: 'Name and price are required' });
+      }
+      const category = req.body.category;
+      if (category) {
+        const categories = await listCategories();
+        if (!categories.find(c => c.value === category)) {
+          return res.status(400).json({ error: 'Invalid category' });
+        }
+      } else {
+        return res.status(400).json({ error: 'Category is required' });
       }
       const product = await createProduct(req.body);
       return res.status(201).json(product);

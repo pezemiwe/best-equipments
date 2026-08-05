@@ -93,7 +93,7 @@ export const ProductFormModal = ({
               <NumberInputField borderRadius="none" placeholder="0.00" />
             </NumberInput>
           </FormControl>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel fontSize="14px">Category</FormLabel>
             <Select
               borderRadius="none"
@@ -101,6 +101,7 @@ export const ProductFormModal = ({
               value={form.category}
               onChange={(e) => setForm("category", e.target.value)}
             >
+              <option value="" disabled>Select category</option>
               {categories.map((type: any) => (
                 <option value={type.value} key={type.value}>
                   {type.name}

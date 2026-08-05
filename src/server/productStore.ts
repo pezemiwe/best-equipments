@@ -274,7 +274,7 @@ export const createProduct = async (
     name: input.name || '',
     amount: Number(input.amount) || 0,
     url,
-    category: input.category || 'accessories',
+    category: input.category || '',
     brand: input.brand || '',
     description: input.description || '',
     sku: input.sku || `TBE-${nanoid(6).toUpperCase()}`,
@@ -426,4 +426,32 @@ export const addReview = async (
     await writeFileStore(products);
   }
   return updated;
+};
+
+export const countProductsByCategory = async (category: string): Promise<number> => {
+  if (hasDatabase()) {
+    await ensureDbReady();
+    const rows = await sql()`SELECT COUNT(*)::int AS count FROM products WHERE category = ${category}` as any[];
+    return rows[0].count;
+  }
+  const products = await readFileStore();
+  return products.filter((p) => p.category === category).length;
+};
+
+export const reassignProductCategory = async (oldValue: string, newValue: string): Promise<void> => {
+  if (hasDatabase()) {
+    await ensureDbReady();
+    await sql()`UPDATE products SET category = ${newValue}, updated_at = ${Date.now()} WHERE category = ${oldValue}`;
+    return;
+  }
+  const products = await readFileStore();
+  let updated = false;
+  for (const product of products) {
+    if (product.category === oldValue) {
+      product.category = newValue;
+      product.updatedAt = Date.now();
+      updated = true;
+    }
+  }
+  if (updated) await writeFileStore(products);
 };

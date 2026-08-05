@@ -44,6 +44,8 @@ import { DeleteModal } from '@/components/admin/DeleteModal';
 import { AnalyticsDashboard } from '@/components/admin/AnalyticsDashboard';
 import { CategoryTable } from '@/components/admin/CategoryTable';
 import { CategoryFormModal } from '@/components/admin/CategoryFormModal';
+import { EnquiryTable } from '@/components/admin/EnquiryTable';
+import { useAdminEnquiries, useUpdateEnquiryStatus } from '@/hooks/enquiries';
 
 const ACCENT = '#2563eb';
 const DARK = '#0f172a';
@@ -51,7 +53,7 @@ const DARK = '#0f172a';
 const emptyForm: ProductPayload = {
   name: '',
   brand: '',
-  category: 'engine',
+  category: '',
   amount: 0,
   description: '',
   url: '',
@@ -81,6 +83,9 @@ export default function AdminPortal() {
   
   const { data: orders } = useAdminOrders(authed);
   const updateOrderStatus = useUpdateOrderStatus();
+
+  const { data: enquiries, isLoading: isEnquiriesLoading } = useAdminEnquiries(authed);
+  const updateEnquiryStatus = useUpdateEnquiryStatus();
 
   const { data: categories, isLoading: isCategoriesLoading } = useCategories();
   const createCategory = useCreateCategory();
@@ -115,7 +120,7 @@ export default function AdminPortal() {
 
   const openCreate = () => {
     setEditingId(null);
-    setFormState(emptyForm);
+    setFormState({ ...emptyForm, category: categories?.[0]?.value || '' });
     setPreview('');
     onOpen();
   };
@@ -125,7 +130,7 @@ export default function AdminPortal() {
     setFormState({
       name: product.name,
       brand: product.brand || '',
-      category: product.category || 'accessories',
+      category: product.category || categories?.[0]?.value || '',
       amount: product.amount,
       description: product.description || '',
       url: product.url || '',
@@ -170,6 +175,13 @@ export default function AdminPortal() {
     if (!form.name || !form.amount) {
       return toast({
         title: 'Name and price are required',
+        status: 'error',
+        duration: 4000,
+      });
+    }
+    if (!form.category || !categories?.find((c: any) => c.value === form.category)) {
+      return toast({
+        title: 'Please select a valid category',
         status: 'error',
         duration: 4000,
       });
@@ -320,6 +332,24 @@ export default function AdminPortal() {
     (order: any) => order.status === 'pending'
   ).length;
 
+  const unhandledEnquiryCount = (enquiries || []).filter(
+    (e: any) => e.status === 'new'
+  ).length;
+
+  const changeEnquiryStatus = async (id: string, status: string) => {
+    try {
+      await updateEnquiryStatus.mutateAsync({ id, status });
+      toast({ title: 'Enquiry updated', status: 'success', duration: 3000 });
+    } catch (error: any) {
+      if (error?.response?.status === 401) {
+        setAdminToken(null);
+        setAuthed(false);
+        return;
+      }
+      toast({ title: 'Update failed', status: 'error', duration: 4000 });
+    }
+  };
+
   const filtered = (products || []).filter((product: any) =>
     `${product.name} ${product.brand || ''} ${product.sku || ''}`
       .toLowerCase()
@@ -387,11 +417,12 @@ export default function AdminPortal() {
       </Flex>
 
       <Box px={{ base: '16px', lg: '40px' }} pt='30px'>
-        <DashboardStats 
-          products={products || []} 
-          orders={orders || []} 
-          pendingCount={pendingCount} 
-          totalValue={totalValue} 
+        <DashboardStats
+          products={products || []}
+          orders={orders || []}
+          pendingCount={pendingCount}
+          totalValue={totalValue}
+          enquiryCount={unhandledEnquiryCount}
         />
 
         <Tabs colorScheme='blue' variant='enclosed' bg='transparent'>
@@ -404,6 +435,14 @@ export default function AdminPortal() {
               {pendingCount > 0 && (
                 <Badge ml='8px' colorScheme='yellow' borderRadius='full'>
                   {pendingCount}
+                </Badge>
+              )}
+            </Tab>
+            <Tab fontWeight='600'>
+              Enquiries
+              {unhandledEnquiryCount > 0 && (
+                <Badge ml='8px' colorScheme='red' borderRadius='full'>
+                  {unhandledEnquiryCount}
                 </Badge>
               )}
             </Tab>
@@ -445,10 +484,19 @@ export default function AdminPortal() {
             </TabPanel>
 
             <TabPanel p='0'>
-              <OrderTable 
-                orders={orders || []} 
-                changeOrderStatus={changeOrderStatus} 
-                isUpdating={updateOrderStatus.isLoading} 
+              <OrderTable
+                orders={orders || []}
+                changeOrderStatus={changeOrderStatus}
+                isUpdating={updateOrderStatus.isLoading}
+              />
+            </TabPanel>
+
+            <TabPanel p='0'>
+              <EnquiryTable
+                enquiries={enquiries || []}
+                isLoading={isEnquiriesLoading}
+                markHandled={(id) => changeEnquiryStatus(id, 'handled')}
+                isUpdating={updateEnquiryStatus.isLoading}
               />
             </TabPanel>
           </TabPanels>

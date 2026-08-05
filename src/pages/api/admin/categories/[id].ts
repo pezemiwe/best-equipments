@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { requireAdmin } from '@/server/adminAuth';
-import { deleteCategory, updateCategory } from '@/server/categoryStore';
+import { deleteCategory, updateCategory, getCategory } from '@/server/categoryStore';
+import { countProductsByCategory, reassignProductCategory } from '@/server/productStore';
 
 export const config = {
   api: {
@@ -22,16 +23,29 @@ export default async function handler(
 
   try {
     if (req.method === 'PUT') {
-      const { name } = req.body || {};
+      const { name, value } = req.body || {};
       if (!name) {
         return res.status(400).json({ error: 'Name is required' });
       }
+      const existing = await getCategory(id);
+      if (!existing) return res.status(404).json({ error: 'Not found' });
+      
       const updated = await updateCategory(id, req.body);
       if (!updated) return res.status(404).json({ error: 'Not found' });
+      
+      if (value && value !== existing.value) {
+        await reassignProductCategory(existing.value, value);
+      }
       return res.status(200).json(updated);
     }
 
     if (req.method === 'DELETE') {
+      const existing = await getCategory(id);
+      if (!existing) return res.status(404).json({ error: 'Not found' });
+      const count = await countProductsByCategory(existing.value);
+      if (count > 0) {
+        return res.status(409).json({ error: `Cannot delete category. There are ${count} products using it.` });
+      }
       const ok = await deleteCategory(id);
       if (!ok) return res.status(404).json({ error: 'Not found' });
       return res.status(200).json({ success: true });

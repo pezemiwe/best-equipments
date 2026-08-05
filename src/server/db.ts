@@ -2,8 +2,12 @@ import { neon } from '@neondatabase/serverless';
 
 // Postgres (Neon) is used when DATABASE_URL is set; otherwise the stores fall
 // back to local JSON files so development works with zero configuration.
-export const hasDatabase = () =>
-  !!process.env.DATABASE_URL && process.env.STORE_BACKEND !== 'file';
+export const hasDatabase = () => {
+  if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL is missing. The file-store fallback is development-only and will not work on Netlify. Please set DATABASE_URL in Netlify > Site settings > Environment variables.');
+  }
+  return !!process.env.DATABASE_URL && process.env.STORE_BACKEND !== 'file';
+};
 
 let client: ReturnType<typeof neon> | null = null;
 let schemaReady: Promise<void> | null = null;
@@ -70,6 +74,16 @@ export const ensureSchema = (): Promise<void> => {
       await query`
         CREATE TABLE IF NOT EXISTS subscribers (
           email TEXT PRIMARY KEY,
+          created_at BIGINT NOT NULL
+        )`;
+      await query`
+        CREATE TABLE IF NOT EXISTS enquiries (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL,
+          vehicle TEXT NOT NULL DEFAULT '',
+          message TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'new',
           created_at BIGINT NOT NULL
         )`;
     })().catch((error) => {

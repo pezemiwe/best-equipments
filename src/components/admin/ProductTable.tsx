@@ -19,7 +19,7 @@ import {
   Tr,
   Skeleton,
 } from "@chakra-ui/react";
-import { AddIcon, DeleteIcon, EditIcon, SearchIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon, EditIcon, SearchIcon, WarningIcon } from "@chakra-ui/icons";
 
 const ACCENT = "#2563eb";
 
@@ -179,7 +179,16 @@ export const ProductTable = ({
                   </Flex>
                 </Td>
                 <Td fontSize="14px">{product.brand || "-"}</Td>
-                <Td fontSize="14px">{categoryLabel(product.category)}</Td>
+                <Td fontSize="14px">
+                  {categories?.find((c: any) => c.value === product.category) ? (
+                    categoryLabel(product.category)
+                  ) : (
+                    <Flex alignItems="center" color="red.500" gap="6px" title="Invalid category">
+                      <WarningIcon />
+                      <Text>{product.category}</Text>
+                    </Flex>
+                  )}
+                </Td>
                 <Td fontSize="13px" color="gray.500">
                   {product.sku || "-"}
                 </Td>

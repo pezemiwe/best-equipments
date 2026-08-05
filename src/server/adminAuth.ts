@@ -1,11 +1,27 @@
 import crypto from 'crypto';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+const isProduction = process.env.NODE_ENV === 'production';
+const DEV_SECRET = 'best-equipments-dev-secret-change-me';
+const DEV_PASSWORD = 'best-equipments-admin';
+
+if (isProduction) {
+  if (!process.env.ADMIN_SECRET || process.env.ADMIN_SECRET === DEV_SECRET) {
+    throw new Error('ADMIN_SECRET is missing or insecure. Please set a secure ADMIN_SECRET in Netlify > Site settings > Environment variables.');
+  }
+  if (!process.env.ADMIN_PASSWORD || process.env.ADMIN_PASSWORD === DEV_PASSWORD) {
+    throw new Error('ADMIN_PASSWORD is missing or insecure. Please set a secure ADMIN_PASSWORD in Netlify > Site settings > Environment variables.');
+  }
+  if (process.env.ADMIN_PASSWORD.length < 12) {
+    throw new Error('ADMIN_PASSWORD must be at least 12 characters long. Please update it in Netlify > Site settings > Environment variables.');
+  }
+}
+
 // Configure via env in production:
 //   ADMIN_PASSWORD - password for the admin portal
 //   ADMIN_SECRET   - secret used to sign session tokens
-const SECRET = process.env.ADMIN_SECRET || 'best-equipments-dev-secret-change-me';
-const PASSWORD = process.env.ADMIN_PASSWORD || 'best-equipments-admin';
+const SECRET = process.env.ADMIN_SECRET || DEV_SECRET;
+const PASSWORD = process.env.ADMIN_PASSWORD || DEV_PASSWORD;
 const TOKEN_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours
 
 const sign = (payload: string) =>

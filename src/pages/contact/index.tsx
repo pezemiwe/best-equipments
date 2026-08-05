@@ -32,16 +32,41 @@ export const Contact = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    toast({
-      title: "Message sent",
-      description: "Our parts team will get back to you within one business day.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-    reset();
+  const onSubmit = async (data: any) => {
+    try {
+      const res = await fetch('/api/enquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        toast({
+          title: 'Failed to send message',
+          description: json.error || 'Something went wrong. Please try again.',
+          status: 'error',
+          duration: 6000,
+          isClosable: true,
+        });
+        return;
+      }
+      toast({
+        title: 'Message sent!',
+        description: 'Our parts team will get back to you within one business day.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+      reset();
+    } catch {
+      toast({
+        title: 'Network error',
+        description: 'Could not reach the server. Please check your connection and try again.',
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      });
+    }
   };
   return (
     <Layout>
